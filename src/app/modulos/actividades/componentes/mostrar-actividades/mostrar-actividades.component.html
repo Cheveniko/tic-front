@@ -1,0 +1,96 @@
+<div class="contenedor">
+    <section class="header">
+        <div class="header-title">
+            <h1>Actividades</h1>
+            <p>Para los niveles de cada carrera puede crear diferentes grupos para organizar la cantidad de estudiantes.
+            </p>
+        </div>
+        <div class="header-operations">
+            <button class="seccion-agregar-nivel-boton" *ngIf="esCoordinador()" mat-raised-button color="primary"
+                [routerLink]="['crear-actividad']">
+                Crear una actividad
+            </button>
+        </div>
+    </section>
+
+    <section>
+        <br>
+        <mat-form-field appearance="outline" class="search">
+            <mat-label>Buscar actividad</mat-label>
+            <input matInput placeholder="Por código, asignatura o docente" [formControl]="searchControl">
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+    </section>
+
+    <section *ngIf="actividades.length">
+        <mat-table [dataSource]="datoFilas" matSortDirection="asc">
+            <!-- Docente -->
+            <ng-container matColumnDef="docente" matSort>
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Docente</mat-header-cell>
+                <mat-cell *matCellDef="let fila"> {{fila.docente.nombreCompleto}}</mat-cell>
+            </ng-container>
+
+            <!-- Asignatura -->
+            <ng-container matColumnDef="asignatura" matSort>
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Asignatura</mat-header-cell>
+                <mat-cell  *matCellDef="let fila"> 
+                <div class="{{fila.restricciones.length ? 'activeRestriction': ''}}">
+                    {{fila.asignatura.nombre}}
+                    ({{fila.asignatura.codigo}})
+                </div>
+                </mat-cell>
+            </ng-container>
+
+            <!-- Número de estudiantes -->
+            <ng-container matColumnDef="numeroEstudiantes" matSort>
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Número de estudiantes</mat-header-cell>
+                <mat-cell *matCellDef="let fila"> {{fila.numeroEstudiantes}}
+                </mat-cell>
+            </ng-container>
+
+            <!-- Tipo de aula -->
+            <ng-container matColumnDef="tipoAula" matSort>
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Tipo Aula</mat-header-cell>
+                <mat-cell *matCellDef="let fila"> {{fila.tipoAula.tipo}}
+                </mat-cell>
+            </ng-container>
+
+            <!-- Grupo -->
+            <ng-container matColumnDef="grupo" matSort>
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Grupo</mat-header-cell>
+                <mat-cell *matCellDef="let fila"> {{fila.grupo.nombre}}
+                </mat-cell>
+            </ng-container>
+
+            <!-- Duración (horas) -->
+            <ng-container matColumnDef="duracion" matSort>
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Duración (horas)</mat-header-cell>
+                <mat-cell *matCellDef="let fila"> {{fila.duracion}}
+                </mat-cell>
+            </ng-container>
+
+            <!-- BOTONES DE TIEMPO/LUGAR -->
+            <ng-container matColumnDef="restricciones">
+                <mat-header-cell *matHeaderCellDef class="centerCell">Acciones</mat-header-cell>
+                <mat-cell *matCellDef="let fila">
+                    <!-- AÑADIR RESTRICCIONES -->
+                    <button mat-icon-button [routerLink]="[fila.id,'restricciones']" matTooltip="Ver restriccion">
+                        <mat-icon color="primary">work_off</mat-icon>
+                    </button>
+                    <!-- ACTUALIZAR ACTIVIDAD -->
+                    <button mat-icon-button *ngIf="esCoordinador()" [routerLink]="[fila.id,'actualizar-actividad']"
+                        matTooltip="Actualizar actividad">
+                        <mat-icon color="primary">edit</mat-icon>
+                    </button>
+                    <!-- ELIMINAR ACTIVIDAD -->
+                    <button mat-icon-button *ngIf="esCoordinador()" (click)="eliminarActividad(fila.id)" matTooltip="Eliminar actividad">
+                        <mat-icon color="warn">delete</mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columnas;"></mat-row>
+        </mat-table>
+    </section>
+</div>

@@ -1,0 +1,92 @@
+<div class="contenedor" *ngIf="formGroup">
+    <form class="filtros" [formGroup]="formGroup">
+        <div class="columna filtroDocente" *ngIf="formGroup">
+                <mat-form-field appearance="fill" class="filtroDocente">
+                    <mat-label>Filtrar el horario por docente:</mat-label>
+                    <mat-select name="arregloDocentes" formControlName="filtroDocente">
+                        <mat-option *ngFor="let docente of arregloDocentes" [value]="docente.nombreCompleto">
+                            {{docente.nombreCompleto}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+        </div>        
+       
+        <div class="columna filtroGrupo">
+            <mat-form-field appearance="fill" class="filtroGrupo">
+                <mat-label>Filtrar por grupo:</mat-label>
+                <mat-select name="arregloGrupos" formControlName="filtroGrupo">
+                    <mat-option *ngFor="let grupo of arregloGrupos" [value]="grupo.nombre">
+                        {{grupo.nombre}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>       
+
+        <div class="columna filtroAula">
+            <mat-form-field appearance="fill" class="filtroGrupo">
+                <mat-label>Filtrar por aula:</mat-label>
+                <mat-select name="arregloGrupos" formControlName="filtroGrupo">
+                    <mat-option *ngFor="let grupo of arregloGrupos" [value]="grupo.nombre">
+                        {{grupo.nombre}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+
+        <div>
+            <button class="seccion-agregar-nivel-boton" mat-raised-button color="primary"
+            (click)="exporter.exportTable('xlsx')">
+               Exportar
+            </button>
+        </div>
+        
+    </form>
+    <section class="schedule-container">
+    <!-- Matriz con días de la semana -->
+    <mat-table matTableExporter [dataSource]="datoFilasTabla" #exporter="matTableExporter">
+        <!-- Hora -->
+        <ng-container matColumnDef="HORA" sticky>
+            <mat-header-cell *matHeaderCellDef> HORA </mat-header-cell>
+            <mat-cell *matCellDef="let fila"> {{fila.rangoHoras}} </mat-cell>
+        </ng-container>
+
+        <!-- Días -->
+        <ng-container *ngFor="let dia of columnasTabla.slice(1, columnasTabla.length)" class="column-DIA" [matColumnDef]="dia">
+            <mat-header-cell class="column-DIA" *matHeaderCellDef>{{dia}}</mat-header-cell>
+            <mat-cell class="column-DIA" *matCellDef="let fila">
+                <!-- DOCENTE -->
+                <div class="column-DIA" *ngIf="fila.horarioFilaDocente.length > 0">
+                    <div class="column-DIA" *ngIf="obtenerHorarioPorDiaDocente(fila.horarioFilaDocente, dia)">
+                        <h1 class="horario">{{obtenerHorarioPorDiaDocente(fila.horarioFilaDocente, dia)!.asignatura}}</h1>
+                        <p class="horario">{{obtenerHorarioPorDiaDocente(fila.horarioFilaDocente, dia)!.tipoAula}}
+                            {{obtenerHorarioPorDiaDocente(fila.horarioFilaDocente, dia)!.aula}}</p>
+
+                    </div>
+                </div>
+                <!-- GRUPO -->
+                <div *ngIf="fila.horarioFilaGrupo.length > 0">
+                    <div *ngIf="obtenerHorarioPorDiaGrupo(fila.horarioFilaGrupo, dia)" class="celda">
+                        <p class="horario">{{obtenerHorarioPorDiaGrupo(fila.horarioFilaGrupo, dia)!.asignatura}}</p>
+                        <p class="horario">{{obtenerHorarioPorDiaGrupo(fila.horarioFilaGrupo, dia)!.docente}}</p>
+                        <p class="horario">{{obtenerHorarioPorDiaGrupo(fila.horarioFilaGrupo, dia)!.tipoAula}}
+                            {{obtenerHorarioPorDiaGrupo(fila.horarioFilaGrupo, dia)!.aula}}</p>
+                    </div>
+                </div>
+                <!-- AULA -->
+                
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="columnasTabla"></mat-header-row>
+        <mat-row *matRowDef="let fila; columns: columnasTabla;"></mat-row>
+    </mat-table>
+        
+    </section>
+
+    <!-- Botones -->
+    <div class="parteInferior">
+        <button mat-button mat-raised-button color="warn" [routerLink]="['..']"
+            class="buttonStyleCancel">Regresar</button>
+    </div>
+</div>

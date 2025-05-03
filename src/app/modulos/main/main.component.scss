@@ -1,0 +1,91 @@
+@import '../../../themes/variables.scss';
+
+mat-toolbar {
+    max-height: 8vh;
+}
+
+mat-toolbar button {
+    font-size: 4vh;
+}
+
+.brand-container {
+    display: flex;
+    align-items: center;
+    margin-left: 1.5rem;
+}
+
+.spa-logo {
+    width: 5rem;
+    margin-top: 0.4rem;
+    margin-right: 0.8rem;
+}
+
+.toolbar {
+    background-color: #122f4c;
+}
+
+.menuAcciones {
+    position: absolute;
+    top: 64px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(251, 251, 251, 0.613);
+}
+
+#home {
+    color: $text_on_primary;
+    text-decoration: none;
+    font-size: 1rem;
+}
+#home:hover {
+    color: $accent;
+}
+
+mat-sidenav {
+    width: 20vw;
+}
+  
+.spacer {
+    flex: 1 1 auto;
+}
+
+.iconoUsuario {
+    font-size: 40px;
+    color: #c1e5ff;
+}
+
+.correoUsuario {
+    padding-right: 1vw;
+    font-size: 1rem;
+    color: white;
+}
+
+.active {
+    background-color: $accent;
+    color: $text_on_accent;
+}
+
+#cuentaIcono:hover {
+    color: $accent;
+}
+
+.nav-item{
+    display: flex;  
+}
+
+
+.nav-button-label{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.rol-section-label {
+    margin-left: 2rem;
+    margin-top: 2rem;
+    h3 {
+        font-size: 1rem;
+        color: rgb(133, 133, 133);
+    }
+}

@@ -1,0 +1,92 @@
+@import '../../../../../themes/variables.scss';
+
+.contenedor {
+    margin: 0 0.5vw;
+}
+
+.filtros {
+    display: flex;
+    padding-top: 1.2vw;
+    justify-content: space-around;
+}
+
+.filtroDocente {
+    min-width: 25vw;
+}
+
+.filtroGrupo {
+    min-width: 20vw;
+}
+
+.filtroAula {
+    min-width: 20vw;
+}
+
+.columna {
+    width: 10rem;
+    padding-bottom: 1vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.filtroDocente {
+    width: 25%;
+}
+
+.schedule-container{
+    height: 70vh; /* Ajustamos la altura para que quepa en la pantalla */
+    width: 100%;
+    max-width: 100%;
+    overflow: auto;
+}
+
+.horario {
+    font-size: 1.2vh;
+    top: 0;
+    left: 0;
+    margin: 0;
+}
+
+.parteInferior {
+    margin-top: 2vh;
+    text-align: center;
+}
+
+.parteInferior button {
+    margin: 0 2vw;
+}
+
+// Filas
+.mat-row,
+.mat-header-row {
+    top: 0;
+    left: 0;
+    margin: 0;
+    font-size: 0.5vh;
+}
+
+// Columnas
+.mat-column-HORA {
+    flex: 0 0 12%; /* Reducimos el ancho de la columna HORA */
+    color:rgb(74,84,121);
+}
+
+.column-DIA {
+    font-size: 1rem;
+}
+
+mat-cell {
+    padding: 5px; 
+    font-size: 0.9rem; 
+}
+
+mat-header-cell,
+mat-cell {
+    justify-content: center;
+    width: 50%;
+}
+
+mat-table {
+    width: 100%;
+}

@@ -1,0 +1,96 @@
+@import '../../../../../themes/variables.scss';
+
+.contenedor {
+    margin: 0 2vw;
+}
+
+/*.contHeader *{
+    border: 1px solid red;
+}*/
+
+mat-card {
+    margin: 1vh 0;
+}
+
+.tarjetas {
+    display: flex;
+}
+
+#advertencia {
+    background-color: $warn;
+    color: $text_on_warn;
+    width: 54%;
+}
+
+#info {
+    background-color: $accent;
+    color: $text_on_accent;
+    margin-left: 2%;
+    width: 44%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.parteInferior {
+    margin-top: 2vh;
+    text-align: center;
+}
+
+.parteInferior button {
+    margin: 0 2vw;
+}
+
+// Filas
+.mat-row, .mat-header-row {
+    min-height: 30px;
+}
+
+// Columnas
+.mat-column-HORA {
+    flex: 0 0 10%;
+}
+
+// Checkboxes
+mat-checkbox {
+    width: 100%;
+    
+	::ng-deep label {
+        width: calc(100% - 1vw);
+        background-color: #69F0AE !important; 
+    }
+
+    ::ng-deep span {
+        width: 100%;
+        //background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24px' viewBox='0 0 24 24' width='24px' fill='white'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z'/%3E%3C/svg%3E");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: auto;
+    }
+    
+}
+
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,
+.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+    background-color: $warn !important;
+
+    
+}
+
+::ng-deep .mat-checkbox-frame { 
+    border-color: $gray;
+}
+
+mat-cell {
+    text-align: center;
+    cursor: pointer;
+}
+
+mat-header-cell, mat-cell {
+    justify-content: center;
+}
+
+.fila-ocupada {
+    background-color: yellow;
+    cursor:not-allowed;
+    width: 100%;
+}

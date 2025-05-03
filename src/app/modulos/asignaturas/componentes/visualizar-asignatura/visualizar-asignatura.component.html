@@ -1,0 +1,73 @@
+<div class="contenedor">
+    <div class="parteSuperior">
+        <!-- BOTONES DE CREACIÓN -->
+        <div>
+            <!-- CREAR UNA ASIGNATURA -->
+            <button class="btnSuperior" *ngIf="esCoordinador()" mat-raised-button color="primary" (click)="abrirCreacionAsignatura()">
+                Crear nueva asignatura
+            </button>
+            <!-- CREAR VARIAS ASIGNATURAS -->
+            <button mat-raised-button *ngIf="esCoordinador()" color="accent" (click)="fileInput.click()">
+                {{ archivoSeleccionado ? 'Cambiar archivo CSV' : 'Subir archivo CSV'}}
+            </button>
+            <input hidden (change)="seleccionarArchivo($event)" onclick="this.value = null;" #fileInput type="file">
+            <span class="nombreArchivo">{{archivoSeleccionado?.name}}</span>
+        </div>
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Filtro: </mat-label>
+                <input matInput (keyup)="filtrarTabla($event)" placeholder="Ingrese el texto a buscar" #input>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <mat-table [dataSource]="datosFilaAsignatura" matSort #tablaSort="matSort" matSortActive="codigo"
+        matSortDirection="asc">
+
+        <!-- CODIGO DE LA ASIGNATURA -->
+        <ng-container matColumnDef="codigo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Código</mat-header-cell>
+            <mat-cell *matCellDef="let fila">{{fila.codigo}}</mat-cell>
+        </ng-container>
+
+        <!-- NOMBRE DE LA ASIGNATURA -->
+        <ng-container matColumnDef="nombre">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</mat-header-cell>
+            <mat-cell *matCellDef="let fila">{{fila.nombre}}</mat-cell>
+        </ng-container>
+
+        <!-- CREDITOS DE LA ASIGNATURA -->
+        <ng-container matColumnDef="creditos">
+            <mat-header-cell *matHeaderCellDef>Créditos</mat-header-cell>
+            <mat-cell *matCellDef="let fila">{{fila.creditos}}</mat-cell>
+        </ng-container>
+
+        <!-- BOTONES DE ACTUALIZAR/ELIMINAR -->
+        <ng-container matColumnDef="acciones">
+            <mat-header-cell *matHeaderCellDef>Acciones </mat-header-cell>
+            <mat-cell *matCellDef="let fila">
+                <!-- ACTUALIZAR ASIGNATURA -->
+                <button mat-icon-button *ngIf="esCoordinador()" (click)="abrirActualizacionAsignatura(fila)" matTooltip="Actualizar">
+                    <mat-icon color="primary">edit</mat-icon>
+                </button>
+                <button mat-icon-button disabled *ngIf="esAsistenteAcademico()">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <!-- ELIMINAR ASIGNATURA -->
+                <button mat-icon-button *ngIf="esCoordinador()" (click)="eliminarAsignatura(fila)" matTooltip="Eliminar">
+                    <mat-icon color="warn">delete</mat-icon>
+                </button>
+                <button mat-icon-button disabled *ngIf="esAsistenteAcademico()">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+    </mat-table>
+
+    <mat-paginator [pageSize]="10" showFirstLastButtons></mat-paginator>
+
+</div>

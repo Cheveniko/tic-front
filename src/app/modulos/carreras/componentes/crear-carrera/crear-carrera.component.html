@@ -1,0 +1,116 @@
+<div *ngIf="formGroup">
+    <h1 class="title">Ingrese la información de la carrera que desee crear</h1>
+    <form [formGroup]="formGroup">
+        <!-- CÓDIGO -->
+        <mat-form-field appearance="fill">
+            <mat-label>Código</mat-label>
+            <input matInput formControlName="codigo" (keyup)="formatearTextoCodigo($event)" placeholder="Ej.: ISW">
+            <!-- HINT -->
+            <mat-hint>El código debe tener 3 a 7 letras.</mat-hint>
+            <!-- ERRORES -->
+            <mat-error *ngIf="formGroup.get('codigo')?.invalid &&
+                        formGroup.get('codigo')?.touched &&
+                        formGroup.get('codigo')?.hasError('required')">
+                El código es un campo requerido.
+            </mat-error>
+            <mat-error
+                *ngIf="formGroup.get('codigo')?.invalid &&
+                        formGroup.get('codigo')?.touched &&
+                        (formGroup.get('codigo')?.hasError('minlength') || formGroup.get('codigo')?.hasError('maxlength'))">
+                El código debe tener 3 a 7 letras.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('codigo')?.invalid &&
+                        formGroup.get('codigo')?.touched &&
+                        formGroup.get('codigo')?.hasError('pattern')">
+                El nombre debe tener solo letras del abecedario.
+            </mat-error>
+        </mat-form-field>
+        <!-- NOMBRE -->
+        <mat-form-field appearance="fill">
+            <mat-label>Nombre</mat-label>
+            <input matInput formControlName="nombre" (keyup)="formatearTextoNombre($event)"
+                placeholder="Ej.: INGENIERÍA DE SOFTWARE">
+            <!-- ERRORES -->
+            <mat-error *ngIf="formGroup.get('nombre')?.invalid &&
+                        formGroup.get('nombre')?.touched &&
+                        formGroup.get('nombre')?.hasError('required')">
+                El nombre es un campo requerido.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('nombre')?.invalid &&
+                        formGroup.get('nombre')?.touched &&
+                        formGroup.get('nombre')?.hasError('minlength')">
+                El nombre debe tener al menos 5 caracteres.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('nombre')?.invalid &&
+                        formGroup.get('nombre')?.touched &&
+                        formGroup.get('nombre')?.hasError('maxlength')">
+                El nombre debe tener al menos 80 caracteres.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('nombre')?.invalid &&
+                        formGroup.get('nombre')?.touched &&
+                        formGroup.get('nombre')?.hasError('pattern')">
+                El nombre debe tener solo letras del abecedario.
+            </mat-error>
+        </mat-form-field>
+        <!-- DURACIÓN -->
+        <mat-form-field appearance="fill">
+            <mat-label>Duración</mat-label>
+            <input matInput formControlName="duracion" placeholder="Ej.: 5">
+            <!-- HINT -->
+            <mat-hint>Valor entero entre 1 y 10</mat-hint>
+            <!-- ERRORES -->
+            <mat-error *ngIf="formGroup.get('duracion')?.invalid &&
+                        formGroup.get('duracion')?.touched &&
+                        formGroup.get('duracion')?.hasError('required')">
+                La duración es un campo requerido.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('duracion')?.invalid &&
+                        formGroup.get('duracion')?.touched &&
+                        (formGroup.get('duracion')?.hasError('max') || formGroup.get('duracion')?.hasError('min'))">
+                La duración admite valores entre {{configuracion.minDuracion}} y {{configuracion.maxDuracion}}.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('duracion')?.invalid &&
+                        formGroup.get('duracion')?.touched &&
+                        formGroup.get('duracion')?.hasError('pattern')">
+                La duración debe ser un número entero.
+            </mat-error>
+        </mat-form-field>
+        <!-- MODALIDAD -->
+        <mat-form-field appearance="fill">
+            <mat-label>Modalidad</mat-label>
+            <input matInput formControlName="modalidad" (keyup)="formatearTextoModalidad($event)"
+                placeholder="Ej.: PRESENCIAL">
+            <!-- ERRORES -->
+            <mat-error *ngIf="formGroup.get('modalidad')?.invalid &&
+                        formGroup.get('modalidad')?.touched &&
+                        formGroup.get('modalidad')?.hasError('required')">
+                La modalidad es un campo requerido.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('modalidad')?.invalid &&
+                        formGroup.get('modalidad')?.touched &&
+                        formGroup.get('modalidad')?.hasError('minlength')">
+                La modalidad debe tener al menos 5 caracteres.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('modalidad')?.invalid &&
+                        formGroup.get('modalidad')?.touched &&
+                        formGroup.get('modalidad')?.hasError('maxlength')">
+                La modalidad debe tener al menos 50 caracteres.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('modalidad')?.invalid &&
+                        formGroup.get('modalidad')?.touched &&
+                        formGroup.get('modalidad')?.hasError('pattern')">
+                La modalidad debe tener solo letras del abecedario.
+            </mat-error>
+        </mat-form-field>
+
+        <mat-dialog-actions>
+            <button mat-raised-button color="primary" class="buttonStyleConfirm" (click)="crearUnaCarrera()"
+                [disabled]="formGroup.invalid || cargando">
+                Crear carrera
+            </button>
+            <button mat-button mat-raised-button color="warn" (click)="cancelar()"
+                class="buttonStyleCancel">Cancelar</button>
+        </mat-dialog-actions>
+
+    </form>
+</div>

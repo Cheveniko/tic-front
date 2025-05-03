@@ -1,0 +1,124 @@
+<!-- Spinner para mostrar que se está cargando -->
+<div *ngIf="isLoading" class="spinner">
+    <mat-spinner></mat-spinner>
+</div>
+
+<form *ngIf="!isLoading" [formGroup]="formularioJornadaLaboral">
+
+    <!-- Jornada -->
+    <mat-card class="tab-jornada tab">
+        <mat-card-title class="tab-titulo">
+            <div>Jornada Laboral <mat-label *ngIf="semestreSeleccionado">- {{semestreSeleccionado.abreviatura}}
+                </mat-label>
+            </div>
+            <div>
+                <div class="tab-titulo-acciones">
+                    <button mat-raised-button *ngIf="this.jornadasSemestre && this.jornadasSemestre.length === 0"
+                        (click)="crearJornadaLaboral()" color="primary">Crear</button>
+                </div>
+            </div>
+        </mat-card-title>
+        <mat-card-subtitle>Ingresa los días y horas laborables para la planificación académica.</mat-card-subtitle>
+        <mat-card-content>
+
+            <!-- Selección de semestre -->
+            <div class="tab-jornada-semestres" *ngIf="semestres.length >= 1; else noSemestres">
+                <mat-form-field appearance="fill" class="select-semestre">
+                    <mat-label>Selecciona el semestre en curso</mat-label>
+                    <mat-select [(value)]="semestreSeleccionado" (selectionChange)="seleccionarSemestre()">
+                        <mat-option *ngFor="let semestre of semestres" [value]="semestre">
+                            {{semestre.abreviatura}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <!-- En caso de que no se hayan registrados semestres-->
+            <ng-template #noSemestres>
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>No existen semestres registrados</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        Solicite al administrador del sistema la creación de un nuevo semestre para la planificación
+                        académica.
+                    </mat-card-content>
+                </mat-card>
+            </ng-template>
+
+            <form *ngIf="semestreSeleccionado">
+                <div class="tab-jornada-secciones tab-secciones">
+
+                    <!-- Horas laborables -->
+                    <mat-card class="tab-jornada-secciones-horas">
+                        <div>
+                            <mat-label><strong>Seleciona la hora de inicio de la jornada laboral:</strong></mat-label>
+                        </div>
+
+                        <!-- Hora de inicio -->
+                        <div>
+                            <mat-form-field class="tab-jornada-secciones-horas-inputs" appearance="fill">
+                                <mat-label>Hora de inicio</mat-label>
+                                <mat-select formControlName="horaInicio">
+                                    <mat-option *ngFor="let hora of intervalosHoras" [value]="hora">
+                                        {{hora}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="this.formularioJornadaLaboral.get('horaInicio')?.invalid">
+                                    La hora de inicio es requerida.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Hora fin -->
+                        <div>
+                            <mat-label><strong>Seleciona la hora final de la jornada laboral:</strong></mat-label>
+                        </div>
+                        <div>
+                            <mat-form-field class="tab-jornada-secciones-horas-inputs" appearance="fill">
+                                <mat-label>Hora final</mat-label>
+                                <mat-select formControlName="horaFin">
+                                    <mat-option *ngFor="let hora of intervalosHoras" [value]="hora">
+                                        {{hora}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="this.formularioJornadaLaboral.get('horaFin')?.invalid">
+                                    La hora final es requerida.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Hora de almuerzo -->
+                        <div>
+                            <mat-label><strong>Seleciona la hora de almuerzo de la jornada laboral:</strong></mat-label>
+                        </div>
+                        <div>
+                            <mat-form-field class="tab-jornada-secciones-horas-inputs" appearance="fill">
+                                <mat-label>Hora de almuerzo</mat-label>
+                                <mat-select formControlName="horaAlmuerzo">
+                                    <mat-option *ngFor="let hora of horasAlmuerzo" [value]="hora">
+                                        {{hora}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="this.formularioJornadaLaboral.get('horaAlmuerzo')?.invalid">
+                                    La hora de almuerzo es requerida.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </mat-card>
+
+                    <!-- Días laborables -->
+                    <mat-card class="tab-jornada-secciones-dias">
+                        <mat-label><strong>Seleccione los días laborables.</strong></mat-label>
+                        <mat-selection-list formControlName="dias" class="seleccion-dias" required="">
+                            <mat-list-option *ngFor="let dia of diasLaborables" [value]="dia">
+                                {{dia}}
+                            </mat-list-option>
+                        </mat-selection-list>
+                    </mat-card>
+                </div>
+            </form>
+
+        </mat-card-content>
+    </mat-card>
+</form>

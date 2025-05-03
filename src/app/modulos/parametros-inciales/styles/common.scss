@@ -1,0 +1,22 @@
+.tab {
+    padding: 2rem;
+
+    &-titulo {
+        display: flex;
+        justify-content: space-between;
+
+        &-acciones {
+            padding: 0rem 0.5rem;
+
+            button {
+                margin: 0rem 0.5rem;
+            }
+        }
+    }
+
+    &-secciones {
+        display: flex;
+        justify-content: space-around;
+        padding: 1rem;
+    }
+}

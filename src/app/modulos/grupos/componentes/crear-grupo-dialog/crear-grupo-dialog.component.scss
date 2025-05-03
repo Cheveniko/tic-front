@@ -1,0 +1,30 @@
+.form-grupos {
+    display: flex;
+    align-items: center;
+}
+
+.form-grupos-input-numero {
+    width: 60%;
+
+    mat-form-field {
+        width: 100%;
+        margin-left: 10%;
+    }
+}
+
+.form-grupos-crear {
+    width: 100%;
+}
+
+.dialog-title {
+    display: flex;
+    margin-left: 4%;
+    margin-top: 4%;
+}
+
+.dialog-subtitle{
+    display: flex;
+    margin-left: 4%;
+    margin-bottom: 2%;
+}
+

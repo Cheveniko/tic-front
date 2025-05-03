@@ -1,0 +1,89 @@
+<div *ngIf="formGroup">
+    <h1 class="title">Ingrese la información de la asignatura que desee actualizar</h1>
+    <form [formGroup]="formGroup">
+        <!-- CÓDIGO -->
+        <mat-form-field appearance="fill">
+            <mat-label>Código</mat-label>
+            <input matInput formControlName="codigo" (keyup)="formatearTextoCodigo($event)" placeholder="Ej.: ISWD713">
+            <!-- HINT -->
+            <mat-hint>El código debe tener 4 letras seguido de 3 números.</mat-hint>
+            <!-- ERRORES -->
+            <mat-error *ngIf="formGroup.get('codigo')?.invalid &&
+                        formGroup.get('codigo')?.touched &&
+                        formGroup.get('codigo')?.hasError('required')">
+                El código es un campo requerido.
+            </mat-error>
+            <mat-error
+                *ngIf="formGroup.get('codigo')?.invalid &&
+                        formGroup.get('codigo')?.touched &&
+                        (formGroup.get('codigo')?.hasError('minlength') || formGroup.get('codigo')?.hasError('maxlength'))">
+                El código debe tener 7 caracteres.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('codigo')?.invalid &&
+                        formGroup.get('codigo')?.touched &&
+                        formGroup.get('codigo')?.hasError('pattern')">
+                El código debe tener 4 letras seguido de 3 números.
+            </mat-error>
+        </mat-form-field>
+        <!-- NOMBRE -->
+        <mat-form-field appearance="fill">
+            <mat-label>Nombre</mat-label>
+            <input matInput formControlName="nombre" (keyup)="formatearTextoNombre($event)"
+                placeholder="Ej.: INGENIERÍA DE SOFTWARE Y DE REQUERIMIENTOS">
+            <!-- ERRORES -->
+            <mat-error *ngIf="formGroup.get('nombre')?.invalid &&
+                        formGroup.get('nombre')?.touched &&
+                        formGroup.get('nombre')?.hasError('required')">
+                El nombre es un campo requerido.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('nombre')?.invalid &&
+                        formGroup.get('nombre')?.touched &&
+                        formGroup.get('nombre')?.hasError('minlength')">
+                El nombre debe tener al menos 5 caracteres.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('nombre')?.invalid &&
+                        formGroup.get('nombre')?.touched &&
+                        formGroup.get('nombre')?.hasError('maxlength')">
+                El nombre debe tener al menos 80 caracteres.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('nombre')?.invalid &&
+                        formGroup.get('nombre')?.touched &&
+                        formGroup.get('nombre')?.hasError('pattern')">
+                El nombre debe tener solo letras del abecedario.
+            </mat-error>
+        </mat-form-field>
+        <!-- CRÉDITOS -->
+        <mat-form-field appearance="fill">
+            <mat-label>Créditos</mat-label>
+            <input matInput formControlName="creditos" placeholder="Ej.: 5">
+            <!-- HINT -->
+            <mat-hint>Valor entero entre 1 y 5</mat-hint>
+            <!-- ERRORES -->
+            <mat-error *ngIf="formGroup.get('creditos')?.invalid &&
+                        formGroup.get('creditos')?.touched &&
+                        formGroup.get('creditos')?.hasError('required')">
+                Los créditos son un campo requerido.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('creditos')?.invalid &&
+                        formGroup.get('creditos')?.touched &&
+                        (formGroup.get('creditos')?.hasError('max') || formGroup.get('creditos')?.hasError('min'))">
+                Los créditos admite valores entre {{configuracion.minCredito}} y {{configuracion.maxCredito}}.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('creditos')?.invalid &&
+                        formGroup.get('creditos')?.touched &&
+                        formGroup.get('creditos')?.hasError('pattern')">
+                Los créditos deben ser un número entero.
+            </mat-error>
+        </mat-form-field>
+
+        <mat-dialog-actions>
+            <button mat-raised-button color="primary" class="buttonStyleConfirm" (click)="actualizarAsignaturaPorID()"
+                [disabled]="formGroup.invalid || cargando">
+                Actualizar asignatura
+            </button>
+            <button mat-button mat-raised-button color="warn" (click)="cancelar()"
+                class="buttonStyleCancel">Cancelar</button>
+        </mat-dialog-actions>
+
+    </form>
+</div>

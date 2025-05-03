@@ -1,0 +1,123 @@
+<div class="container-restriccion">
+    <!--DESCRIPCION DE LA ACTIVIDAD-->
+    <div class="container-actividad">
+        <mat-card >
+            <mat-card-title style="padding-left: 2%;">
+                Descripción de la actividad
+            </mat-card-title>
+            <mat-card-content>
+                <mat-list role="list">
+                    <mat-list-item class="list-container" role="listitem">
+                        <div class="list-container-row-title">
+                            <mat-icon>school</mat-icon>
+                            <strong>Docente seleccionado:</strong>
+                        </div>
+                    </mat-list-item>
+                    <mat-list-item role="listitem">{{this.actividad.docente!!.nombreCompleto}}</mat-list-item>
+
+                    <mat-list-item class="list-container" role="listitem">
+                        <div class="list-container-row-title">
+                            <mat-icon>book</mat-icon>
+                            <strong>Asignatura:</strong>
+                        </div>
+                    </mat-list-item>
+                    <mat-list-item role="listitem">{{this.actividad.asignatura!!.nombre}}
+                        {{this.actividad.asignatura!!.codigo}}</mat-list-item>
+                    <mat-list-item class="list-container" role="listitem">
+                        <div class="list-container-row-title">
+                            <mat-icon>format_list_numbered</mat-icon>
+                            <strong>Número de estudiantes de la asignatura:</strong>
+                        </div>
+                    </mat-list-item>
+                    <mat-list-item role="listitem">{{this.actividad.numeroEstudiantes}}</mat-list-item>
+                    <mat-list-item class="list-container" role="listitem">
+                        <div class="list-container-row-title">
+                            <mat-icon>person_pin</mat-icon>
+                            <strong>Tipo de aula:</strong>
+                        </div>
+                    </mat-list-item>
+                    <mat-list-item role="listitem"> {{this.actividad.tipoAula!!.tipo}}</mat-list-item>
+
+                    <mat-list-item class="list-container" role="listitem">
+                        <div class="list-container-row-title">
+                            <mat-icon>person_pin</mat-icon>
+                            <strong>Grupo:</strong>
+                        </div>
+                    </mat-list-item>
+                    <mat-list-item role="listitem">
+                        {{this.actividad.grupo!!.nombre}}</mat-list-item>
+
+                    <mat-list-item class="list-container" role="listitem">
+                        <div class="list-container-row-title">
+                            <mat-icon>av_timer</mat-icon>
+                            <strong>Duración (en horas):</strong>
+                        </div>
+                    </mat-list-item>
+                    <mat-list-item role="listitem">
+                        {{this.actividad.duracion}}</mat-list-item>
+
+                </mat-list>
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+    <!--FORMULARIO PARA RESTRICCIONES-->
+    <form class="place-res" [formGroup]="formularioRestriccionesLugarTiempo" class="container-form">
+        <mat-card style="padding: 2%;">
+            <mat-card-title>
+                Agregar restricciones
+            </mat-card-title>
+            <br>
+            <!--Campo de muestra de la actividad-->
+            <br>
+            <!--Campo de ingreso del Aula-->
+            <h3><strong>Aula</strong></h3>
+            <mat-form-field style="width: 100%; margin: auto;">
+                <mat-label>Aula</mat-label>
+                <mat-select formControlName="espacioFisico">
+                    <mat-option *ngFor="let espacioFisico of espaciosFisicosDisponibles" [value]="espacioFisico">
+                        {{espacioFisico.nombre}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <br>
+
+            <h3><strong>Día</strong></h3>
+            <mat-form-field appearance="fill" style="width: 100%; margin: auto;">
+                <!--Campo de ingreso del Día-->
+                <mat-label>Dìa</mat-label>
+                <mat-select formControlName="dia">
+                    <mat-option *ngFor="let dia of diasLaborables" [value]="dia">
+                        {{dia | titlecase}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+
+            <h3><strong>Hora de inicio</strong></h3>
+            <mat-form-field appearance="fill" style="width: 100%; margin: auto;">
+                <!--Campo de ingreso de la Hora de Inicio-->
+
+                <mat-label>Hora de inicio</mat-label>
+                <mat-select formControlName="hora">
+                    <mat-option *ngFor="let hora of horasDisponibles" [value]="hora">
+                        {{hora}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!--BOTONES-->
+            <div class="container-buttons">
+                <button *ngIf="restriccionesPorActividad.length === 0 && esCoordinador()" (click)="crearRestriccion()" mat-raised-button
+                    color="primary">
+                    Crear restricción</button>
+                <button *ngIf="restriccionesPorActividad.length !== 0 && esCoordinador()" (click)="eliminarRestriccion()" mat-raised-button
+                    color="warn">
+                    Eliminar restricción</button>
+                <div class="button-spacing"></div>
+                <button mat-raised-button color="primary" [routerLink]="['/spa/actividades']">
+                    Regresar</button>
+            </div>
+        </mat-card>
+    </form>
+</div>

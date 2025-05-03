@@ -1,0 +1,102 @@
+table {
+    width: 100%;
+}
+
+.mat-mdc-form-field {
+    font-size: 14px;
+    width: 100%;
+}
+
+td,
+th {
+    width: 25%;
+}
+
+.container-table {
+    height: 14rem;
+    max-width: 100%;
+    overflow: auto;
+}
+
+mat-table {
+    max-width: 100%;
+    overflow: auto;
+}
+
+.demo-table {
+    width: 100%;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+    cursor: pointer;
+}
+
+tr {
+    cursor: pointer;
+
+}
+
+.activities {
+    display: flex;
+    justify-content: center;
+    height: 70vh;
+    width: 100%;
+    max-width: 100%;
+    overflow: auto;
+}
+
+.container-summary {
+    width: 30%;
+}
+
+.docente-seleccionado {
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+
+    &-table-selection {
+        width: 30rem;
+        margin: 1rem;
+    }
+}
+
+tr:hover {
+    background-color: rgb(254, 255, 221);
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+    border-color: currentColor;
+}
+
+.dialog-input-filter {
+    width: 100%;
+}
+
+.demo-row-is-clicked {
+    background-color: rgb(254, 255, 221);
+    color: white;
+}
+
+.list-container {
+    div {
+        width: 100%;
+    }
+}
+
+.list-container-row-title {
+    color: rgb(62, 70, 101);
+    display: flex;
+    align-items: center;
+
+    mat-icon {
+        margin: 0px 10px 0px 0px;
+    }
+}

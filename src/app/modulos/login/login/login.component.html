@@ -1,0 +1,70 @@
+<!-- DIVISION DE LA PANTALLA EN DOS -->
+<mat-grid-list cols="2" rowHeight="100vh">
+    <!-- COLUMNA DE IMAGEN DE LA FACULTAD -->
+    <mat-grid-tile>
+        <img src="assets/images/fislogo.jpg" alt="Facultad de Ingeniería en Sistemas" width="auto" height="100%">
+    </mat-grid-tile>
+    <!-- FORMULARIO DE INICIO DE SESIÓN -->
+    <mat-grid-tile>
+        <div *ngIf="formGroup" class="loginFormat">
+            <div class="loginLogo">
+                <img src="assets/images/spa_logo.png" alt="">
+            </div>
+            <h3>Sistema de Planificación Académica de la FIS</h3>
+            <h1>Inicio de sesión</h1>
+            <form [formGroup]="formGroup" class="loginForm">
+                <!-- INPUT CORREO ELECTRONICO -->
+                <mat-form-field appearance="fill">
+                    <mat-label>Correo electrónico institucional</mat-label>
+                    <input matInput formControlName="correo" placeholder="Ej.: ejemplo@epn.edu.ec">
+                    <!-- MENSAJE DE ERROR -->
+                    <mat-error *ngIf="formGroup.get('correo')?.invalid && 
+                        formGroup.get('correo')?.touched &&
+                        formGroup.get('correo')?.hasError('required')">
+                        El correo es un campo requerido.
+                    </mat-error>
+                    <mat-error *ngIf="formGroup.get('correo')?.invalid && 
+                        formGroup.get('correo')?.touched &&
+                        (formGroup.get('correo')?.hasError('email') || formGroup.get('correo')?.hasError('pattern'))">
+                        Ingrese un correo institucional válido (Ej.: ejemplo&#64;epn.edu.ec).
+                    </mat-error>
+                </mat-form-field>
+                <!-- INPUT CONTRASEÑA -->
+                <mat-form-field appearance="fill">
+                    <mat-label>Contraseña</mat-label>
+                    <input matInput formControlName="constrasena" type="password">
+                    <mat-error *ngIf="formGroup.get('constrasena')?.invalid && 
+                        formGroup.get('constrasena')?.touched &&
+                        formGroup.get('constrasena')?.hasError('required')">
+                        La contraseña es un campo requerido.
+                    </mat-error>
+                    <mat-error *ngIf="formGroup.get('constrasena')?.invalid &&
+                        formGroup.get('constrasena')?.dirty &&
+                        formGroup.get('constrasena')?.hasError('pattern') &&
+                        !formGroup.get('constrasena')?.hasError('minlength') &&
+                        !formGroup.get('constrasena')?.hasError('maxlength')">
+                        La contraseña debe tener al menos un número, un caracter
+                        especial (&#64;$!%*?&), una mayúscula y una minúscula.
+                    </mat-error>
+                    <mat-error *ngIf="formGroup.get('constrasena')?.invalid &&
+                        formGroup.get('constrasena')?.dirty &&
+                        formGroup.get('constrasena')?.hasError('minlength')">
+                        La contraseña debe tener al menos 8 caracteres.
+                    </mat-error>
+                    <mat-error *ngIf="formGroup.get('constrasena')?.invalid && 
+                        formGroup.get('constrasena')?.dirty &&
+                        formGroup.get('constrasena')?.hasError('maxlength')">
+                        La contraseña debe tener como máximo 16 caracteres.
+                    </mat-error>
+                </mat-form-field>
+                <button mat-raised-button class="buttonStyle" [disabled]="formGroup.invalid"
+                    (click)="login()">Ingresar</button>
+
+                <mat-error *ngIf="errorSesion" id="errorSesion">
+                    Correo o contraseña incorrectos.</mat-error>
+            </form>
+
+        </div>
+
+    </mat-grid-tile>
+</mat-grid-list>

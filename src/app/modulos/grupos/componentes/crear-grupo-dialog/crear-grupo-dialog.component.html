@@ -1,0 +1,63 @@
+<h1 *ngIf="!dataCarreras.length">No hay carreras registradas</h1>
+<mat-card class="dialog" *ngIf="dataCarreras.length">
+    <mat-card-title class="dialog-title">Crear uno o más grupos</mat-card-title>
+    <mat-card-subtitle class="dialog-subtitle">Ingrese la información necesaria para crear uno o más grupos para un
+        nivel.
+    </mat-card-subtitle>
+    <div style="height: 10%;"></div>
+    <mat-card-content>
+        <form [formGroup]="formularioCrearGrupo" class="dialog-field">
+
+            <!-- Selección de carrera -->
+            <div class="dialog-field1" *ngIf="dataCarreras.length >= 1; else noCarreras">
+                <mat-form-field *ngIf="dataCarreras.length !== 0" style="width: 100%" class="dialog-field"
+                    appearance="fill" class="select-semestre">
+                    <mat-label>Selecciona el nombre de la carrera</mat-label>
+                    <mat-select formControlName="carrera" [(value)]="carreraSeleccionada"
+                        (selectionChange)="seleccionarCarrera()">
+                        <mat-option *ngFor="let carrera of dataCarreras" [value]="carrera">
+                            {{carrera.nombre}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <!-- Selección de carrera -->
+            <div class="dialog-field1" *ngIf="dataCarreras.length >= 1 && carreraSeleccionada; else noCarreras">
+                <mat-form-field *ngIf="dataCarreras.length !== 0" style="width: 100%" class="dialog-field"
+                    appearance="fill" class="select-semestre">
+                    <mat-label>Selecciona el nivel</mat-label>
+                    <mat-select formControlName="niveles" [(value)]="nivelSeleccionado">
+                        <mat-option *ngFor="let nivel of niveles" [value]="nivel">
+                            {{nivel.nombre}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div>
+                <div class="form-grupos" *ngIf="nivelSeleccionado">
+                    <div><strong>Número de grupos:</strong> </div>
+                    <div class="form-grupos-input-numero">
+                        <mat-form-field appearance="fill">
+                            <input value="2" matInput formControlName="numeroGrupos" type="number" [min]="1" [max]="4">
+                        </mat-form-field>
+                    </div>
+                </div>
+
+            </div>
+            <div>
+                <button *ngIf="carreraSeleccionada && nivelSeleccionado" class="dialog__boton form-grupos-crear"
+                    mat-raised-button color="primary" (click)="crearGrupos()">Crear
+                    grupos</button>
+            </div>
+
+        </form>
+
+    </mat-card-content>
+
+    <!-- En caso de que no se hayan registrados facultades -->
+    <ng-template #noCarreras>
+        <mat-label>
+            No existen carreras registradas.
+        </mat-label>
+    </ng-template>
+</mat-card>

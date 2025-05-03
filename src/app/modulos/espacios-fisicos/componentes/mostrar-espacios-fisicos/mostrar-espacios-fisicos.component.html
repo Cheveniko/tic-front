@@ -1,0 +1,82 @@
+<div class="contenedor">
+
+  <div class="parteSuperior">
+    <!-- Botones -->
+    <div>
+      <!-- Crear nuevo espacio físico -->
+      <button class="btnSuperior" mat-raised-button color="primary"
+        (click)="abrirDialogoCrear()">
+        Crear nuevo espacio físico
+      </button>
+
+      <!-- Crear múltiples espacios físicos con un archivo CSV -->
+      <button mat-raised-button color="accent" (click)="fileInput.click()">
+        {{ archivoSeleccionado ? 'Cambiar archivo CSV' : 'Subir archivo CSV' }}
+      </button>
+      <input hidden (change)="seleccionarArchivo($event)" onclick="this.value=null;" #fileInput type="file">
+      <span class="nombreArchivo">{{archivoSeleccionado?.name}}</span>
+    </div>
+
+    <!-- Filtro Facultad -->
+    <div *ngIf="filtro">
+      <span class="filtroPlaceholder">Filtro de facultad:</span>
+      <mat-form-field id="filtroField" appearance="fill">
+        <mat-label>Facultad</mat-label>
+        <mat-select matInput [formControl]="filtro">
+            <mat-option [value]="filtrarTodas">{{filtrarTodas}}</mat-option>
+            <mat-option *ngFor="let facultad of facultadesFiltro" [value]="facultad.id">
+                {{facultad.nombre}}
+            </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <mat-table [dataSource]="datoFilasEspaciosFisicos" matSort #tablaSort="matSort" matSortActive="nombre" matSortDirection="asc">
+      <!-- Nombre -->
+      <ng-container matColumnDef="nombre">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </mat-header-cell>
+        <mat-cell *matCellDef="let fila"> {{fila.nombre}} </mat-cell>
+      </ng-container>
+    
+      <!-- Tipo -->
+      <ng-container matColumnDef="tipo">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </mat-header-cell>
+        <mat-cell *matCellDef="let fila"> {{fila.tipo}} </mat-cell>
+      </ng-container>
+    
+      <!-- Aforo -->
+      <ng-container matColumnDef="aforo">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Aforo </mat-header-cell>
+        <mat-cell *matCellDef="let fila"> {{fila.aforo}} </mat-cell>
+      </ng-container>
+
+      <!-- Facultad -->
+      <ng-container matColumnDef="facultad">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Facultad </mat-header-cell>
+        <mat-cell *matCellDef="let fila"> {{fila.facultad}} </mat-cell>
+      </ng-container>
+
+      <!-- Acciones -->
+      <ng-container matColumnDef="acciones">
+          <mat-header-cell *matHeaderCellDef> Acciones </mat-header-cell>
+          <mat-cell *matCellDef="let fila">
+              <!-- Editar registro -->
+              <button mat-icon-button (click)="abrirDialogoActualizar(fila.id)" matTooltip="Actualizar" matTooltipPosition="left">
+                <mat-icon color="primary">edit</mat-icon>
+              </button>
+              <!-- Eliminar registro -->
+              <button mat-icon-button (click)="eliminarEspacioFisico(fila)" matTooltip="Eliminar" matTooltipPosition="right">
+                <mat-icon color="warn">delete</mat-icon>
+              </button>
+          </mat-cell>
+      </ng-container>
+    
+      <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+  <mat-paginator [pageSize]="10"
+                 showFirstLastButtons>
+  </mat-paginator>
+
+</div>

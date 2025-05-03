@@ -1,0 +1,73 @@
+<div class="contenedor">
+    <div class="parteSuperior">
+        <!-- BOTONES DE CREACIÓN -->
+        <div>
+            <!-- CREAR UNA CARRERA -->
+            <button *ngIf="esCoordinador()" class="btnSuperior" mat-raised-button color="primary" (click)="abrirCreacionCarrera()">
+                Crear nueva carrera
+            </button>
+        </div>
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Filtro: </mat-label>
+                <input matInput (keyup)="filtrarTabla($event)" placeholder="Ingrese el texto a buscar" #input>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <mat-table [dataSource]="datosFilaCarrera" matSort #tablaSort="matSort" matSortActive="codigo"
+        matSortDirection="asc">
+
+        <!-- CODIGO DE LA CARRERA -->
+        <ng-container matColumnDef="codigo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Código</mat-header-cell>
+            <mat-cell *matCellDef="let fila">{{fila.codigo}}</mat-cell>
+        </ng-container>
+
+        <!-- NOMBRE DE LA CARRERA -->
+        <ng-container matColumnDef="nombre">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</mat-header-cell>
+            <mat-cell *matCellDef="let fila">{{fila.nombre}}</mat-cell>
+        </ng-container>
+
+        <!-- DURACIÓN DE LA CARRERA -->
+        <ng-container matColumnDef="duracion">
+            <mat-header-cell *matHeaderCellDef>Duración</mat-header-cell>
+            <mat-cell *matCellDef="let fila">{{fila.duracion}}</mat-cell>
+        </ng-container>
+
+        <!-- MODALIDAD DE LA CARRERA -->
+        <ng-container matColumnDef="modalidad">
+            <mat-header-cell *matHeaderCellDef>Modalidad</mat-header-cell>
+            <mat-cell *matCellDef="let fila">{{fila.modalidad}}</mat-cell>
+        </ng-container>
+
+        <!-- BOTONES DE ACTUALIZAR/ELIMINAR -->
+        <ng-container matColumnDef="acciones">
+            <mat-header-cell *matHeaderCellDef>Acciones </mat-header-cell>
+            <mat-cell *matCellDef="let fila">
+                <!-- ACTUALIZAR CARRERA -->
+                <button mat-icon-button *ngIf="esCoordinador()" (click)="abrirActualizacionCarrera(fila)" matTooltip="Actualizar">
+                    <mat-icon color="primary">edit</mat-icon>
+                </button>
+                <button mat-icon-button disabled *ngIf="esAsistenteAcademico()">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <!-- ELIMINAR CARRERA -->
+                <button mat-icon-button *ngIf="esCoordinador()" (click)="eliminarCarrera(fila)" matTooltip="Eliminar">
+                    <mat-icon color="warn">delete</mat-icon>
+                </button>
+                <button mat-icon-button disabled *ngIf="esAsistenteAcademico()">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+    </mat-table>
+
+    <mat-paginator [pageSize]="10" showFirstLastButtons></mat-paginator>
+
+</div>

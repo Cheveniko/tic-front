@@ -1,0 +1,69 @@
+<div class="contenedor">
+    <h1 *ngIf="carreras.length === 0">Cargando...</h1>
+    <section class="header">
+        <div class="header-title">
+            <h1 *ngIf="carreras.length !== 0">Grupos</h1>
+            <p>Seleccione una carrera y un nivel para poder visualizar uno o más grupos de cada nivel.
+            </p>
+        </div>
+        <div class="header-operations">
+            <button class="seccion-agregar-nivel-boton" *ngIf="esCoordinador()" mat-raised-button color="primary"
+                (click)="abrirCrearGrupoAulaDialog()">
+                Crear uno o más grupos
+            </button>
+        </div>
+    </section>
+
+    <div class="secciones" *ngIf="carreras.length !== 0">
+        <section class="seccion">
+            <h3><strong>Carreras</strong></h3>
+            <mat-selection-list #carrerasPoli [multiple]="false" (selectionChange)="seleccionarSemestre($event)">
+                <mat-list-option *ngFor="let carrera of carreras" [value]="carrera">
+                    {{carrera.nombre}} ({{carrera.codigo}})
+                </mat-list-option>
+            </mat-selection-list>
+
+
+        </section>
+        <section class="seccion">
+            <h3><span><strong>Niveles</strong></span></h3>
+            <p *ngIf="!carrerasPoli.selectedOptions.hasValue()">
+                Selecciona una carrera
+            </p>
+            <button class="seccion-agregar-nivel-boton" mat-raised-button
+                *ngIf="niveles.length === 0 && carrerasPoli.selectedOptions.hasValue()" color="primary"
+                (click)="crearNiveles()">
+                Crear los niveles de la carrera
+            </button>
+            <mat-selection-list #nivelesPoli *ngIf="niveles.length !== 0 && carrerasPoli.selectedOptions.hasValue()"
+                [multiple]="false" (selectionChange)="seleccionarNivel($event)">
+
+                <mat-list-option *ngFor="let nivel of niveles" [value]="nivel">
+                    <div class="option">
+
+                        <div class="nivel" *ngIf="niveles.length !== 0">
+                            {{nivel.nombre}}
+                        </div>
+                    </div>
+                </mat-list-option>
+            </mat-selection-list>
+        </section>
+        <section class="seccion">
+            <h3>
+                <strong>Grupos</strong>
+            </h3>
+            <p *ngIf="!nivelSeleccionado">
+                Selecciona un nivel
+            </p>
+            <mat-selection-list #gruposPoli [multiple]="false">
+                <mat-list-option *ngFor="let grupo of grupos" [value]="grupo">
+                    {{grupo.nombre}}
+                </mat-list-option>
+            </mat-selection-list>
+        </section>
+
+    </div>
+
+
+
+</div>

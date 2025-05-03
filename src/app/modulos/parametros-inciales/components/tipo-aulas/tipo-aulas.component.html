@@ -1,0 +1,56 @@
+<mat-card class="tab-tipos tab">
+  <mat-card-title class="tab-titulo">
+    <div>Aulas disponibles </div>
+    <div>
+      <div class="tab-titulo-acciones">
+        <button mat-raised-button *ngIf="esCoordinador()" (click)="abrirCrearTipoAulaDialog()" color="primary">Añadir aula</button>
+      </div>
+    </div>
+
+  </mat-card-title>
+  <mat-card-subtitle>Ingresa los tipos de aulas existentes en la facultad de nuestra institución.</mat-card-subtitle>
+  <mat-card-content>
+    <div class="tab-tipos-secciones tab-secciones">
+
+      <mat-table [dataSource]="dataSource" class="mat-elevation-z8 tab-tipos-secciones-aulas">
+
+        <!-- Tipo de aula -->
+        <ng-container matColumnDef="Tipo de aula">
+          <mat-header-cell *matHeaderCellDef> Tipo de aula </mat-header-cell>
+          <mat-cell *matCellDef="let data"> {{data.tipo}} </mat-cell>
+        </ng-container>
+
+        <!-- Facultad -->
+        <ng-container matColumnDef="Facultad">
+          <mat-header-cell *matHeaderCellDef> Facultad </mat-header-cell>
+          <mat-cell *matCellDef="let data"> {{data.facultad.nombre}} </mat-cell>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="Acciones" *ngIf="esCoordinador">
+          <mat-header-cell *matHeaderCellDef> Acciones </mat-header-cell>
+          <mat-cell *matCellDef="let data">
+            <!-- Editar -->
+            <button mat-icon-button *ngIf="esCoordinador()" (click)="abrirEditarTipoAulaDialog(data)">
+              <mat-icon color="primary">edit</mat-icon>
+            </button>
+            <button mat-icon-button disabled *ngIf="esAsistenteAcademico()">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <!-- Eliminar -->
+            <button mat-icon-button *ngIf="esCoordinador()" (click)="eliminarTipoAula(data)">
+              <mat-icon color="warn">delete</mat-icon>
+            </button>
+            <button mat-icon-button disabled *ngIf="esAsistenteAcademico()">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+
+    </div>
+  </mat-card-content>
+</mat-card>

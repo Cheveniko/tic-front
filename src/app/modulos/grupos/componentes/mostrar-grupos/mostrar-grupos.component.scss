@@ -1,0 +1,60 @@
+.contenedor {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 4vh;
+
+    .secciones {
+        display: flex;
+        margin-top: 3rem;
+        flex-wrap: wrap;
+
+        .seccion {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid rgb(212, 230, 255);
+            padding: 20px 0px;
+
+            &-agregar-nivel-boton {
+                margin: 5rem 0px;
+            }
+        }
+
+
+    }
+}
+
+mat-selection-list {
+    width: 100%;
+    text-align: center;
+}
+
+.nivel {
+    width: 100%;
+}
+
+mat-list-option[aria-selected="true"] {
+    background: rgba(132, 220, 255, 0.7);
+}
+
+
+
+.option {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.parteInferior {
+    margin-top: 2vh;
+    text-align: center;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

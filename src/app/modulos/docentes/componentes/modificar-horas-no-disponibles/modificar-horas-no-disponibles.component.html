@@ -1,0 +1,68 @@
+<h1>Horas Disponibles/No Disponibles del Docente</h1>
+<div class="contenedor">
+  <div class="container-fluid">
+      <div class="row contHeader">
+        <div class="row col-lg-6 col-md-6 col-sm-6">
+            <strong>Docente: </strong> 
+            <span>{{this.docenteSeleccionado.nombreCompleto}}</span>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6">
+          <div class="d-flex justify-content-end">
+            <button mat-raised-button color="primary" (click)="guardarHorarioDocente()" class="mr-10">
+              Guardar
+            </button>
+          </div>  
+        </div>  
+      </div>
+  </div>
+  <!-- Matriz con días de la semana -->
+  <mat-table [dataSource]="datoFilasTabla" [formGroup]="formGroup">
+      <!-- Hora -->
+      <ng-container matColumnDef="HORA">
+        <mat-header-cell *matHeaderCellDef> HORA </mat-header-cell>
+        <mat-cell *matCellDef="let fila" (click)="marcarODesmarcarFila(fila)"> {{fila.rangoHoras}} </mat-cell>
+      </ng-container>
+    
+      <!-- Días -->
+      <ng-container *ngFor="let dia of columnasTabla.slice(1, columnasTabla.length)"
+        [matColumnDef]="dia"
+      >
+        <mat-header-cell *matHeaderCellDef>{{dia}}</mat-header-cell>
+        <mat-cell *matCellDef="let fila">
+          <!-- No hay hora que seleccionar -->
+          <div *ngIf="fila[dia] === disponibilidad.NO_DISPONIBLE"></div>
+          <!-- Almuerzo -->
+          <div *ngIf="fila[dia] === disponibilidad.ALMUERZO">Almuerzo</div>
+
+          <div class="fila-ocupada" *ngIf="fila[dia] === disponibilidad.OCUPADO_POR_ACTIVIDAD">En Clases</div>
+
+          <!-- Seleccionar hora -->
+          <mat-checkbox *ngIf="fila[dia] == disponibilidad.DISPONIBLE"
+            [formControlName]="obtenerNombreControl(dia, fila.hora)">
+          </mat-checkbox>
+        </mat-cell>
+      </ng-container>
+    
+      <mat-header-row *matHeaderRowDef="columnasTabla"></mat-header-row>
+      <mat-row *matRowDef="let fila; columns: columnasTabla;"></mat-row>
+  </mat-table>
+
+  
+  <!-- Botones -->
+  <div class="parteInferior">
+    <!-- Botones -->
+    <div>
+      <!-- Desmarcar todas las opciones 
+      <button mat-raised-button color="warn" (click)="desmarcarTodo()"
+        [disabled]="!btnDesmarcarHabilitado">
+        Desmarcar todo
+      </button>-->
+
+      <!-- Guardar cambios 
+      <button mat-raised-button color="primary" (click)="guardarCambios()"
+        [disabled]="!btnGuardarHabilitado">
+        {{nombreBtnGuardar}}
+      </button>-->
+    </div>
+  </div>
+</div>

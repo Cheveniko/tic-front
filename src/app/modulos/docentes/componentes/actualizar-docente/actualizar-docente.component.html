@@ -1,0 +1,59 @@
+<div *ngIf="formGroup">
+    <h1 class="title">Ingrese la información del docente que desee actualizar</h1>
+    <form [formGroup]="formGroup">
+        <!-- NOMBRE COMPLETO -->
+        <mat-form-field appearance="fill">
+            <mat-label>Nombre completo</mat-label>
+            <input matInput formControlName="nombreCompleto" (keyup)="formatearTexto($event)"
+                placeholder="Ej.: Juan Pablo Cordero Zambrano">
+            <!-- ERRORES -->
+            <mat-error *ngIf="formGroup.get('nombreCompleto')?.invalid &&
+                        formGroup.get('nombreCompleto')?.touched &&
+                        formGroup.get('nombreCompleto')?.hasError('required')">
+                El nombre es un campo requerido.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('nombreCompleto')?.invalid &&
+                        formGroup.get('nombreCompleto')?.touched &&
+                        formGroup.get('nombreCompleto')?.hasError('minlength')">
+                El nombre debe tener al menos 10 caracteres.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('nombreCompleto')?.invalid &&
+                        formGroup.get('nombreCompleto')?.touched &&
+                        formGroup.get('nombreCompleto')?.hasError('maxlength')">
+                El nombre debe tener un máximo de 70 caracteres.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('nombreCompleto')?.invalid &&
+                        formGroup.get('nombreCompleto')?.touched &&
+                        formGroup.get('nombreCompleto')?.hasError('pattern')">
+                El nombre debe tener solo letras del abecedario.
+            </mat-error>
+        </mat-form-field>
+        <!-- CORREO ELECTRONICO -->
+        <mat-form-field appearance="fill">
+            <mat-label>Correo electrónico</mat-label>
+            <input matInput formControlName="correoElectronico" placeholder="Ej.: nombre.apellido01">
+            <span matSuffix>&#64;epn.edu.ec</span>
+            <!-- ERRORES -->
+            <mat-error *ngIf="formGroup.get('correoElectronico')?.invalid &&
+                        formGroup.get('correoElectronico')?.touched &&
+                        formGroup.get('correoElectronico')?.hasError('required')">
+                El correo electrónico es un campo requerido.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('correoElectronico')?.invalid &&
+                        formGroup.get('correoElectronico')?.touched &&
+                        formGroup.get('correoElectronico')?.hasError('pattern')">
+                El correo debe tener el formato: "nombre.apellido".
+            </mat-error>
+        </mat-form-field>
+
+        <mat-dialog-actions>
+            <button mat-raised-button color="primary" class="buttonStyleConfirm" (click)="actualizarDocentePorID()"
+                [disabled]="formGroup.invalid || cargando">
+                Actualizar docente
+            </button>
+            <button mat-button mat-raised-button color="warn" (click)="cancelar()"
+                class="buttonStyleCancel">Cancelar</button>
+        </mat-dialog-actions>
+
+    </form>
+</div>

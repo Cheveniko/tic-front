@@ -1,0 +1,99 @@
+<div *ngIf="formGroup">
+    <h1>Ingrese la información con la que desea actualizar el espacio físico</h1>
+    <form [formGroup]="formGroup">
+        <!-- Nombre -->
+        <mat-form-field appearance="fill">
+            <mat-label>Nombre</mat-label>
+            <input matInput formControlName="nombre" placeholder="Ej.: Lambda">
+            <!-- Errores -->
+            <mat-error *ngIf="formGroup.get('nombre')?.invalid && 
+                formGroup.get('nombre')?.touched &&
+                formGroup.get('nombre')?.hasError('required')">
+                El nombre es un campo requerido.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('nombre')?.invalid && 
+                formGroup.get('nombre')?.dirty &&
+                formGroup.get('nombre')?.hasError('minlength')">
+                El nombre debe tener al menos 4 caracteres.
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('nombre')?.invalid && 
+                formGroup.get('nombre')?.dirty &&
+                formGroup.get('nombre')?.hasError('maxlength')">
+                El nombre debe tener máximo 15 caracteres.
+            </mat-error>
+        </mat-form-field>
+
+        <!-- Facultad -->
+        <mat-form-field appearance="fill">
+            <mat-label>Facultad</mat-label>
+            <mat-select matInput formControlName="facultad">
+                <mat-option *ngFor="let facultad of facultades" [value]="facultad.id">
+                    {{facultad.nombre}}
+                </mat-option>
+            </mat-select>
+            <!-- Errores -->
+            <mat-error *ngIf="formGroup.get('facultad')?.hasError('required')">
+                La facultad es un campo requerido.
+            </mat-error>
+        </mat-form-field>
+
+        <!-- Tipo y Aforo -->
+        <div class="mitad">
+            <!-- Tipo -->
+            <mat-form-field appearance="fill">
+                <mat-label>Tipo</mat-label>
+                <mat-select matInput formControlName="tipo">
+                    <mat-option *ngFor="let tipo of tipos" [value]="tipo.id">
+                        {{tipo.tipo}}
+                    </mat-option>
+                </mat-select>
+                <!-- Errores -->
+                <mat-error *ngIf="formGroup.get('facultad')?.hasError('required')">
+                    Debe elegir primero una facultad.
+                </mat-error>
+                <mat-error *ngIf="formGroup.get('tipo')?.hasError('required') &&
+                    (formGroup.get('facultad')?.touched || formGroup.get('facultad')?.dirty)">
+                    El tipo es un campo requerido.
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Aforo -->
+            <mat-form-field appearance="fill">
+                <mat-label>Aforo</mat-label>
+                <input matInput formControlName="aforo" type="number" [min]="configuracion.minAforo" [max]="configuracion.maxAforo">
+                <!-- Hint -->
+                <mat-hint>Valor entero entre {{configuracion.minAforo}} y {{configuracion.maxAforo}}</mat-hint>
+                <!-- Errores -->
+                <mat-error *ngIf="formGroup.get('aforo')?.invalid && 
+                    formGroup.get('aforo')?.touched &&
+                    formGroup.get('aforo')?.hasError('required')">
+                    El aforo es un campo requerido.
+                </mat-error>
+                <mat-error *ngIf="formGroup.get('aforo')?.invalid && 
+                    formGroup.get('aforo')?.dirty &&
+                    (formGroup.get('aforo')?.hasError('max') || formGroup.get('aforo')?.hasError('min'))">
+                    El aforo admite valores entre {{configuracion.minAforo}} y {{configuracion.maxAforo}}.
+                </mat-error>
+                <mat-error *ngIf="formGroup.get('aforo')?.invalid && 
+                    formGroup.get('aforo')?.dirty &&
+                    formGroup.get('aforo')?.hasError('pattern')">
+                    El aforo debe ser un número entero.
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="botones">
+            <button mat-raised-button color="primary" class="buttonStyle"
+                (click)="actualizarEspacioFisico()"
+                [disabled]="formGroup.invalid || cargando">
+                Actualizar espacio físico
+            </button>
+
+            <button mat-raised-button color="warn" class="buttonStyle"
+                (click)="cerrarDialogo()">
+                Cerrar
+            </button>
+        </div>
+        
+    </form>
+</div>

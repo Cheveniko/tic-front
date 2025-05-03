@@ -1,0 +1,53 @@
+<div class="contenedor">
+    <h1>Periodo semestre {{ semestreEnCurso? semestreEnCurso.abreviatura : '' }}</h1>
+
+    <mat-table [dataSource]="datoFilas" matSort matSortActive="codigo" matSortDirection="asc" [formGroup]="formGroup">
+
+        <!-- Código -->
+        <ng-container matColumnDef="codigo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Código</mat-header-cell>
+            <mat-cell *matCellDef="let fila">{{fila.asignatura.codigo}}</mat-cell>
+        </ng-container>
+
+        <!-- Nombre -->
+        <ng-container matColumnDef="nombre">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</mat-header-cell>
+            <mat-cell *matCellDef="let fila">{{fila.asignatura.nombre}}</mat-cell>
+        </ng-container>
+
+
+        <!-- Número de estudiantes -->
+        <ng-container matColumnDef="numeroEstudiantes">
+            <mat-header-cell *matHeaderCellDef>Número de estudiantes</mat-header-cell>
+            <mat-cell *matCellDef="let fila">
+                <mat-form-field appearance="fill">
+                    <input matInput [formControlName]="fila.asignatura.codigo" type="number" [min]="0"
+                        [max]="configuracion.max">
+                    <!-- Errores -->
+                    <mat-error
+                        *ngIf="formGroup.get(fila.asignatura.codigo)?.invalid && 
+                        formGroup.get(fila.asignatura.codigo)?.dirty &&
+                        (formGroup.get(fila.asignatura.codigo)?.hasError('max') || formGroup.get(fila.asignatura.codigo)?.hasError('min'))">
+                        Solo se admiten valores entre {{0}} y {{configuracion.max}}.
+                    </mat-error>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: columnas;"></mat-row>
+
+    </mat-table>
+
+    <mat-paginator [pageSize]="8" showFirstLastButtons></mat-paginator>
+
+    <!-- Botones -->
+    <div class="parteInferior">
+        <!-- Guardar cambios -->
+        <button mat-raised-button *ngIf="esCoordinador()" color="primary" (click)="guardarCambios()"
+            [disabled]="formGroup.invalid || !btnGuardarHabilitado">
+            Guardar cambios
+        </button>
+    </div>
+
+</div>
