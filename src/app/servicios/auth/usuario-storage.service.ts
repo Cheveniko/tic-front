@@ -1,14 +1,13 @@
-import { Injectable } from '@angular/core';
-import { Usuario } from './models/usuario.model';
+import { Injectable } from "@angular/core";
+import { Usuario } from "./models/usuario.model";
 
-const USUARIO_KEY = 'usuario';
+const USUARIO_KEY = "usuario";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class UsuarioStorageService {
-
-  constructor() { }
+  constructor() {}
 
   guardarUsuario(usuario: Usuario) {
     window.sessionStorage.removeItem(USUARIO_KEY);
@@ -17,16 +16,16 @@ export class UsuarioStorageService {
 
   obtenerUsuario(): Usuario {
     const usuario = window.sessionStorage.getItem(USUARIO_KEY);
-    return (usuario)? JSON.parse(usuario) : {};
+    return usuario ? JSON.parse(usuario) : {};
   }
 
   obtenerRoles() {
     const usuarioAlmacenado = window.sessionStorage.getItem(USUARIO_KEY);
     if (usuarioAlmacenado) {
-        const usuario = JSON.parse(usuarioAlmacenado) as Usuario;
-        return usuario.roles;
+      const usuario = JSON.parse(usuarioAlmacenado) as Usuario;
+      console.log(usuario);
+      return usuario.roles;
     }
     return [];
   }
-
 }

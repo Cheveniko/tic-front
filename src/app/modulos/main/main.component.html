@@ -146,6 +146,17 @@
                         </div>
                     </div>
                 </mat-list-item>
+                <!-- Módulo de reportes -->
+                <mat-list-item [ngClass]="mostrarRutaActiva('/spa/reportes')" [routerLink]="['/spa/reportes']">
+                    <div class="nav-item">
+                        <button mat-icon-button>
+                            <mat-icon>note</mat-icon>
+                        </button>
+                        <div class="nav-button-label">
+                            <a>Reportes</a>
+                        </div>
+                    </div>
+                </mat-list-item>
             </mat-nav-list>
 
             <!-- Gestor de espacios físicos -->
