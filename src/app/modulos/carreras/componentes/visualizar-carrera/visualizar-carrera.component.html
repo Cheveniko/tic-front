@@ -6,6 +6,10 @@
             <button *ngIf="esCoordinador()" class="btnSuperior" mat-raised-button color="primary" (click)="abrirCreacionCarrera()">
                 Crear nueva carrera
             </button>
+            <button class="btnSuperior" mat-raised-button *ngIf="esCoordinador()" color="secondary">
+                <mat-icon color="primary">download</mat-icon>
+                Descargar Reportes
+            </button>
         </div>
         <div>
             <mat-form-field appearance="fill">

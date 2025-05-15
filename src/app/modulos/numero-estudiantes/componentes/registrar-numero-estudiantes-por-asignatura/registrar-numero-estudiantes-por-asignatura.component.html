@@ -1,5 +1,9 @@
 <div class="contenedor">
     <h1>Periodo semestre {{ semestreEnCurso? semestreEnCurso.abreviatura : '' }}</h1>
+        <button class="btnSuperior" mat-raised-button *ngIf="esCoordinador()" color="secondary">
+            <!-- <mat-icon color="primary">download</mat-icon> -->
+            Descargar Reportes
+        </button>
 
     <mat-table [dataSource]="datoFilas" matSort matSortActive="codigo" matSortDirection="asc" [formGroup]="formGroup">
 
@@ -25,7 +29,7 @@
                         [max]="configuracion.max">
                     <!-- Errores -->
                     <mat-error
-                        *ngIf="formGroup.get(fila.asignatura.codigo)?.invalid && 
+                        *ngIf="formGroup.get(fila.asignatura.codigo)?.invalid &&
                         formGroup.get(fila.asignatura.codigo)?.dirty &&
                         (formGroup.get(fila.asignatura.codigo)?.hasError('max') || formGroup.get(fila.asignatura.codigo)?.hasError('min'))">
                         Solo se admiten valores entre {{0}} y {{configuracion.max}}.

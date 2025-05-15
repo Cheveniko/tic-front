@@ -15,6 +15,10 @@
             <button class="seccion-agregar-nivel-boton" *ngIf="esCoordinador()" mat-raised-button color="primary" (click)="test()">
                 Generar horario
             </button>
+            <button style="margin: 2vh;" mat-raised-button *ngIf="esCoordinador()" color="secondary">
+                <mat-icon color="primary">download</mat-icon>
+                Descargar Reportes
+            </button>
         </div>
     </section>
 

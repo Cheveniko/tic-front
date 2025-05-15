@@ -10,6 +10,10 @@
                 [routerLink]="['crear-actividad']">
                 Crear una actividad
             </button>
+            <button mat-raised-button *ngIf="esCoordinador()" color="secondary">
+                <mat-icon color="primary">download</mat-icon>
+                Descargar Reportes
+            </button>
         </div>
     </section>
 
@@ -33,7 +37,7 @@
             <!-- Asignatura -->
             <ng-container matColumnDef="asignatura" matSort>
                 <mat-header-cell *matHeaderCellDef mat-sort-header>Asignatura</mat-header-cell>
-                <mat-cell  *matCellDef="let fila"> 
+                <mat-cell  *matCellDef="let fila">
                 <div class="{{fila.restricciones.length ? 'activeRestriction': ''}}">
                     {{fila.asignatura.nombre}}
                     ({{fila.asignatura.codigo}})

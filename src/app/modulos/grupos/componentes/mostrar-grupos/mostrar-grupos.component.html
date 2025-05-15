@@ -11,6 +11,10 @@
                 (click)="abrirCrearGrupoAulaDialog()">
                 Crear uno o más grupos
             </button>
+            <button style="margin: 2vh;" mat-raised-button *ngIf="esCoordinador()" color="secondary">
+                <!-- <mat-icon color="primary">download</mat-icon> -->
+                Descargar Reportes
+            </button>
         </div>
     </section>
 
