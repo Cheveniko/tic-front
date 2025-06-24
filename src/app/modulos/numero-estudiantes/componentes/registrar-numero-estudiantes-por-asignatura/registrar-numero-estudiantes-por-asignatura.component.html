@@ -1,9 +1,14 @@
 <div class="contenedor">
     <h1>Periodo semestre {{ semestreEnCurso? semestreEnCurso.abreviatura : '' }}</h1>
-        <button class="btnSuperior" mat-raised-button *ngIf="esCoordinador()" color="secondary">
-            <!-- <mat-icon color="primary">download</mat-icon> -->
-            Descargar Reportes
-        </button>
+            <!-- REPORTES -->
+            <button mat-raised-button [matMenuTriggerFor]="menu" class="btnSuperior" color="secondary">
+                <mat-icon>download</mat-icon>
+                Descargar Reporte
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="descargarReporte('xlsx')">Formato XLSX</button>
+                <button mat-menu-item (click)="descargarReporte('pdf')">Formato PDF</button>
+            </mat-menu>
 
     <mat-table [dataSource]="datoFilas" matSort matSortActive="codigo" matSortDirection="asc" [formGroup]="formGroup">
 

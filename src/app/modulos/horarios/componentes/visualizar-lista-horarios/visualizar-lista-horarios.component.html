@@ -15,10 +15,15 @@
             <button class="seccion-agregar-nivel-boton" *ngIf="esCoordinador()" mat-raised-button color="primary" (click)="test()">
                 Generar horario
             </button>
-            <button style="margin: 2vh;" mat-raised-button *ngIf="esCoordinador()" color="secondary">
-                <mat-icon color="primary">download</mat-icon>
-                Descargar Reportes
+            <!-- REPORTES -->
+            <button mat-raised-button [matMenuTriggerFor]="menu" class="btnSuperior" color="secondary">
+                <mat-icon>download</mat-icon>
+                Descargar Reporte
             </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="descargarReporte('xlsx')">Formato XLSX</button>
+                <button mat-menu-item (click)="descargarReporte('pdf')">Formato PDF</button>
+            </mat-menu>
         </div>
     </section>
 

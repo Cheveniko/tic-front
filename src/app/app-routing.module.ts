@@ -1,96 +1,120 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from './modulos/login/login/login.component';
-import { BienvenidoComponent } from './modulos/main/bienvenido/bienvenido.component';
-import { MainComponent } from './modulos/main/main.component';
-import { EsCoordinadorGuard } from './servicios/auth/guards/es-coordinador.guard';
-import { EsAsistenteAcademicoGuard } from './servicios/auth/guards/es-asistente-academico.guard';
-import { EsGestorEspaciosFisicosGuard } from './servicios/auth/guards/es-gestor-espacios.guard';
-import { LoggedGuard } from './servicios/auth/guards/logged.guard';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { LoginComponent } from "./modulos/login/login/login.component";
+import { BienvenidoComponent } from "./modulos/main/bienvenido/bienvenido.component";
+import { MainComponent } from "./modulos/main/main.component";
+import { EsCoordinadorGuard } from "./servicios/auth/guards/es-coordinador.guard";
+import { EsAsistenteAcademicoGuard } from "./servicios/auth/guards/es-asistente-academico.guard";
+import { LoggedGuard } from "./servicios/auth/guards/logged.guard";
 
 const routes: Routes = [
   {
-    path: 'login',
+    path: "login",
     component: LoginComponent,
   },
   {
-    path: '',
-    redirectTo: 'login',
-    pathMatch: 'full',
+    path: "",
+    redirectTo: "login",
+    pathMatch: "full",
   },
   {
-    path: 'spa',
+    path: "spa",
     component: MainComponent,
     canActivate: [LoggedGuard],
     children: [
       {
-        path: '',
+        path: "",
         component: BienvenidoComponent,
       },
       {
-        path: 'parametros-iniciales',
-        loadChildren: () => import('./modulos/parametros-inciales/paremetros-iniciales.module')
-          .then(m => m.ParametrosInicialesModule),
+        path: "parametros-iniciales",
+        loadChildren: () =>
+          import(
+            "./modulos/parametros-inciales/paremetros-iniciales.module"
+          ).then((m) => m.ParametrosInicialesModule),
       },
       {
-        path: 'espacios_fisicos',
+        path: "espacios_fisicos",
         canActivateChild: [EsCoordinadorGuard, EsAsistenteAcademicoGuard],
-        loadChildren: () => import("./modulos/espacios-fisicos/espacios-fisicos.module")
-          .then(m => m.EspaciosFisicosModule)
+        loadChildren: () =>
+          import("./modulos/espacios-fisicos/espacios-fisicos.module").then(
+            (m) => m.EspaciosFisicosModule,
+          ),
       },
       {
-        path: 'numero_estudiantes_por_semestre',
+        path: "numero_estudiantes_por_semestre",
         canActivateChild: [EsCoordinadorGuard, EsAsistenteAcademicoGuard],
-        loadChildren: () => import("./modulos/numero-estudiantes/numero-estudiantes.module")
-          .then(m => m.NumeroEstudiantesModule)
+        loadChildren: () =>
+          import("./modulos/numero-estudiantes/numero-estudiantes.module").then(
+            (m) => m.NumeroEstudiantesModule,
+          ),
       },
       {
-        path: 'docentes',
+        path: "docentes",
         canActivateChild: [EsCoordinadorGuard, EsAsistenteAcademicoGuard],
-        loadChildren: () => import("./modulos/docentes/docentes.module")
-          .then(m => m.DocentesModule)
+        loadChildren: () =>
+          import("./modulos/docentes/docentes.module").then(
+            (m) => m.DocentesModule,
+          ),
       },
       {
-        path: 'asignaturas',
+        path: "asignaturas",
         canActivateChild: [EsCoordinadorGuard, EsAsistenteAcademicoGuard],
-        loadChildren: () => import("./modulos/asignaturas/asignaturas.module")
-          .then(m => m.AsignaturasModule)
+        loadChildren: () =>
+          import("./modulos/asignaturas/asignaturas.module").then(
+            (m) => m.AsignaturasModule,
+          ),
       },
       {
-        path: 'carreras',
+        path: "carreras",
         canActivateChild: [EsCoordinadorGuard, EsAsistenteAcademicoGuard],
-        loadChildren: () => import("./modulos/carreras/carrera.module")
-          .then(m => m.CarreraModule)
+        loadChildren: () =>
+          import("./modulos/carreras/carrera.module").then(
+            (m) => m.CarreraModule,
+          ),
       },
       {
-        path: 'grupos',
+        path: "grupos",
         canActivateChild: [EsCoordinadorGuard, EsAsistenteAcademicoGuard],
-        loadChildren: () => import("./modulos/grupos/grupos.module")
-          .then(m => m.GruposModule)
+        loadChildren: () =>
+          import("./modulos/grupos/grupos.module").then((m) => m.GruposModule),
       },
       {
-        path: 'actividades',
+        path: "actividades",
         canActivateChild: [EsCoordinadorGuard, EsAsistenteAcademicoGuard],
-        loadChildren: () => import("./modulos/actividades/actividades.module")
-          .then(m => m.ActividadesModule)
+        loadChildren: () =>
+          import("./modulos/actividades/actividades.module").then(
+            (m) => m.ActividadesModule,
+          ),
       },
       {
-        path: 'horarios',
+        path: "horarios",
         canActivateChild: [EsCoordinadorGuard, EsAsistenteAcademicoGuard],
-        loadChildren: () => import("./modulos/horarios/horario.module")
-          .then(m => m.HorarioModule)
+        loadChildren: () =>
+          import("./modulos/horarios/horario.module").then(
+            (m) => m.HorarioModule,
+          ),
       },
-    ]
+
+      {
+        path: "reportes",
+        canActivateChild: [EsCoordinadorGuard, EsAsistenteAcademicoGuard],
+        loadChildren: () =>
+          import("./modulos/reportes/reportes.module").then(
+            (m) => m.ReportesModule,
+          ),
+      },
+    ],
   },
   {
-    path: '**',
-    redirectTo: 'spa',
-    pathMatch: 'full',
+    path: "**",
+    redirectTo: "spa",
+    pathMatch: "full",
   },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { useHash: true })],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

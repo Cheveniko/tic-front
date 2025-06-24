@@ -1,11 +1,11 @@
-import { ParametrosInicialesComponent } from "./pages/parametros-iniciales.component";
+import { ReportesComponent } from "./pages/reportes.component";
 import { RouterModule, Routes } from "@angular/router";
 import { NgModule } from "@angular/core";
 
 const routes: Routes = [
   {
     path: "",
-    component: ParametrosInicialesComponent,
+    component: ReportesComponent,
   },
 ];
 
@@ -13,4 +13,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ParametrosInicialesRoutingModule {}
+export class ReportesRoutingModule {}

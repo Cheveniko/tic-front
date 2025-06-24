@@ -1,4 +1,6 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
+import * as XLSX from "xlsx";
+import { jsPDF } from "jspdf";
 import { FormControl } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator } from "@angular/material/paginator";
@@ -238,5 +240,44 @@ export class VisualizarAsignaturaComponent implements OnInit, AfterViewInit {
     return this.usuarioService
       .obtenerRoles()
       .includes(RolesEnum.ASISTENTE_ACADEMICO);
+  }
+
+  descargarReporte(formato: string) {
+    const asignaturas = this.asignaturaExistentes;
+    if (formato === "xlsx") {
+      const worksheet = XLSX.utils.json_to_sheet(asignaturas);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Asignaturas");
+      XLSX.writeFile(workbook, "ReporteAsignaturas.xlsx");
+    } else if (formato === "pdf") {
+      const doc = new jsPDF();
+      const pageHeight = doc.internal.pageSize.height;
+      const marginTop = 20;
+      const lineHeight = 10;
+
+      doc.setFontSize(16);
+      doc.setTextColor(40, 40, 40);
+      doc.setFont("helvetica", "bold");
+      doc.text("Reporte de Asignaturas", 10, marginTop);
+
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "normal");
+
+      let yPosition = marginTop + lineHeight;
+
+      asignaturas.forEach((asignatura, index) => {
+        if (yPosition + lineHeight > pageHeight - marginTop) {
+          doc.addPage();
+          yPosition = marginTop;
+        }
+        doc.text(
+          `${index + 1}. ${asignatura.nombre} - ${asignatura.codigo} - ${asignatura.creditos} créditos`,
+          10,
+          yPosition,
+        );
+        yPosition += lineHeight;
+      });
+      doc.save("ReporteAsignaturas.pdf");
+    }
   }
 }

@@ -23,7 +23,6 @@ export class UsuarioStorageService {
     const usuarioAlmacenado = window.sessionStorage.getItem(USUARIO_KEY);
     if (usuarioAlmacenado) {
       const usuario = JSON.parse(usuarioAlmacenado) as Usuario;
-      console.log(usuario);
       return usuario.roles;
     }
     return [];
