@@ -6,7 +6,5 @@ import { Component } from "@angular/core";
   styleUrls: ["./reportes.component.scss"],
 })
 export class ReportesComponent {
-  carreras: string[] = ['Ingeniería de Sistemas', 'Ingeniería Industrial', 'Ingeniería Civil', 'Arquitectura'];
-
   constructor() {}
 }

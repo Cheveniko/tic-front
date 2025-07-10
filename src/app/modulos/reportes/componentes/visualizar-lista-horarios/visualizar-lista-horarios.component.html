@@ -1,0 +1,103 @@
+<div class="contenedor">
+  <section class="header">
+    <div class="header-title">
+      <h1>Reportes</h1>
+      <p>Selecciona el horario del cual quisieras generar un reporte.</p>
+    </div>
+    <div class="header-operations">
+      <!-- REPORTES -->
+      <!-- <button -->
+      <!--   mat-raised-button -->
+      <!--   [matMenuTriggerFor]="menu" -->
+      <!--   class="btnSuperior" -->
+      <!--   color="secondary" -->
+      <!-- > -->
+      <!--   <mat-icon>download</mat-icon> -->
+      <!--   Descargar Reporte -->
+      <!-- </button> -->
+      <!-- <mat-menu #menu="matMenu"> -->
+      <!--   <button mat-menu-item (click)="descargarReporte('xlsx')"> -->
+      <!--     Formato XLSX -->
+      <!--   </button> -->
+      <!--   <button mat-menu-item (click)="descargarReporte('pdf')"> -->
+      <!--     Formato PDF -->
+      <!--   </button> -->
+      <!-- </mat-menu> -->
+    </div>
+  </section>
+
+  <div class="parteSuperior">
+    <mat-form-field appearance="fill">
+      <mat-label>Filtro: </mat-label>
+      <input
+        matInput
+        (keyup)="filtrarTabla($event)"
+        placeholder="Ingrese el texto a buscar"
+        #input
+      />
+    </mat-form-field>
+  </div>
+
+  <mat-table
+    [dataSource]="datoFilaHorario"
+    matSort
+    #tablaSort="matSort"
+    matSortActive="fechaCreacion"
+    matSortDirection="desc"
+  >
+    <!-- FECHA DE CREACION DE HORARIO -->
+    <ng-container matColumnDef="semestre">
+      <mat-header-cell *matHeaderCellDef mat-sort-header
+        >Semestre</mat-header-cell
+      >
+      <mat-cell *matCellDef="let fila">{{ fila.semestre }}</mat-cell>
+    </ng-container>
+
+    <!-- NOMBRE DE USUARIO CREADOR DEL HORARIO -->
+    <ng-container matColumnDef="descargar">
+      <mat-header-cell *matHeaderCellDef>Descargar</mat-header-cell>
+      <mat-cell *matCellDef="let fila">
+        <!-- EXPORTAR A EXCEL -->
+        <button
+          mat-icon-button
+          (click)="exportarExcelPorSemestre(fila.semestre)"
+          matTooltip="Exportar a Excel"
+          matTooltipPosition="right"
+        >
+          <mat-icon color="accent">my_library_books</mat-icon>
+        </button>
+
+        <!-- EXPORTAR A PDF -->
+        <button
+          mat-icon-button
+          (click)="exportarPDFPorSemestre(fila.semestre)"
+          matTooltip="Exportar a PDF"
+          matTooltipPosition="right"
+        >
+          <mat-icon color="accent">picture_as_pdf</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <!-- BOTÓN DE VISUALIZACIÓN -->
+    <ng-container matColumnDef="visualizar">
+      <mat-header-cell *matHeaderCellDef>Visualizar</mat-header-cell>
+      <mat-cell *matCellDef="let fila">
+        <!-- VISUALIZACIÓN INDIVIDUAL -->
+        <button
+          mat-icon-button
+          [routerLink]="['visualizarHorario', fila.id]"
+          matTooltip="Visualizar"
+          matTooltipPosition="right"
+        >
+          <mat-icon color="primary">visibility</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  </mat-table>
+
+  <mat-paginator [pageSize]="10" showFirstLastButtons></mat-paginator>
+</div>

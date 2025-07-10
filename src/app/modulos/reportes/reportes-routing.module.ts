@@ -1,11 +1,21 @@
-import { ReportesComponent } from "./pages/reportes.component";
-import { RouterModule, Routes } from "@angular/router";
 import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { VisualizarHorarioComponent } from "./componentes/visualizar-horario/visualizar-horario.component";
+import { VisualizarListaHorariosComponent } from "./componentes/visualizar-lista-horarios/visualizar-lista-horarios.component";
 
 const routes: Routes = [
   {
     path: "",
-    component: ReportesComponent,
+    component: VisualizarListaHorariosComponent,
+  },
+  {
+    path: "visualizarHorario/:id",
+    component: VisualizarHorarioComponent,
+  },
+  {
+    path: "**",
+    redirectTo: "",
+    pathMatch: "full",
   },
 ];
 
@@ -13,4 +23,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ReportesRoutingModule {}
+export class HorariosRoutingModule {}

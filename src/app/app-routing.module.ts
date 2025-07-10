@@ -88,15 +88,6 @@ const routes: Routes = [
           ),
       },
       {
-        path: "horarios",
-        canActivateChild: [EsCoordinadorGuard, EsAsistenteAcademicoGuard],
-        loadChildren: () =>
-          import("./modulos/horarios/horario.module").then(
-            (m) => m.HorarioModule,
-          ),
-      },
-
-      {
         path: "reportes",
         canActivateChild: [EsCoordinadorGuard, EsAsistenteAcademicoGuard],
         loadChildren: () =>
@@ -104,6 +95,15 @@ const routes: Routes = [
             (m) => m.ReportesModule,
           ),
       },
+
+      // {
+      //   path: "reportes",
+      //   canActivateChild: [EsCoordinadorGuard, EsAsistenteAcademicoGuard],
+      //   loadChildren: () =>
+      //     import("./modulos/reportes/reportes.module").then(
+      //       (m) => m.ReportesModule,
+      //     ),
+      // },
     ],
   },
   {

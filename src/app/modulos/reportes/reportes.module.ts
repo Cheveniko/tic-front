@@ -1,37 +1,43 @@
-import { CommonModule } from "@angular/common";
-import { MatButtonModule } from "@angular/material/button";
-import { MatCardModule } from "@angular/material/card";
-import { MatDialogModule } from "@angular/material/dialog";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatIconModule } from "@angular/material/icon";
-import { MatInputModule } from "@angular/material/input";
-import { MatListModule } from "@angular/material/list";
-import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import { MatSelectModule } from "@angular/material/select";
-import { MatTableModule } from "@angular/material/table";
-import { MatTabsModule } from "@angular/material/tabs";
 import { NgModule } from "@angular/core";
-import { ReactiveFormsModule } from "@angular/forms";
-import { ReportesComponent } from "./pages/reportes.component";
-import { ReportesRoutingModule } from "./reportes-routing.module";
+import { CommonModule } from "@angular/common";
+
+import { VisualizarHorarioComponent } from "./componentes/visualizar-horario/visualizar-horario.component";
+import { VisualizarListaHorariosComponent } from "./componentes/visualizar-lista-horarios/visualizar-lista-horarios.component";
+
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatTableModule } from "@angular/material/table";
+import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
+import { MatInputModule } from "@angular/material/input";
+import { MatGridListModule } from "@angular/material/grid-list";
+import { MatSortModule } from "@angular/material/sort";
+import { MatSelectModule } from "@angular/material/select";
+import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { HorariosRoutingModule } from "./reportes-routing.module";
+import { MatTableExporterModule } from "mat-table-exporter";
+import { MatMenuModule } from "@angular/material/menu";
 
 @NgModule({
-  declarations: [ReportesComponent],
+  declarations: [VisualizarHorarioComponent, VisualizarListaHorariosComponent],
   imports: [
-    ReportesRoutingModule,
+    MatMenuModule,
     CommonModule,
-    MatCardModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    MatListModule,
-    MatInputModule,
-    MatSelectModule,
-    MatTableModule,
-    MatTabsModule,
+    HorariosRoutingModule,
+    FormsModule,
     ReactiveFormsModule,
+    MatTableModule,
+    MatIconModule,
+    MatButtonModule,
+    MatInputModule,
+    MatGridListModule,
+    MatSortModule,
+    MatSelectModule,
+    MatPaginatorModule,
+    MatDialogModule,
+    MatTooltipModule,
+    MatTableExporterModule,
   ],
 })
 export class ReportesModule {}

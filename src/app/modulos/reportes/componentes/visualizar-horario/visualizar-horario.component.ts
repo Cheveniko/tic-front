@@ -10,7 +10,7 @@ import { GrupoApiService } from "src/app/modulos/grupos/servicios/grupo_api.serv
 import JornadaLaboral from "src/app/modulos/parametros-inciales/models/jornada-laboral.interface";
 import { SemestreService } from "src/app/modulos/parametros-inciales/services/semestre-api.service";
 import Swal from "sweetalert2";
-import { Horario } from "../../modelos/horario.interface";
+import { HorarioEstupido } from "../../modelos/horario.interface";
 import { HorarioGrupo } from "../../modelos/horarioGrupo.interface";
 import { HorarioDocente } from "../../modelos/horarioDocente.interface";
 import { HorarioApiService } from "../../servicios/horarios_api.service";
@@ -42,7 +42,7 @@ export class VisualizarHorarioComponent implements OnInit {
   datoFilasTabla = new MatTableDataSource<Hora>([]);
   jornadasLaborales?: JornadaLaboral[];
 
-  horarioJSON?: Horario;
+  horarioJSON?: HorarioEstupido;
   arregloDocentes?: Docente[];
   arregloGrupos?: Grupo[];
 

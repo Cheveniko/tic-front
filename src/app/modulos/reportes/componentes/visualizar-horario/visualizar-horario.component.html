@@ -9,8 +9,8 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-        </div>        
-       
+        </div>
+
         <div class="columna filtroGrupo">
             <mat-form-field appearance="fill" class="filtroGrupo">
                 <mat-label>Filtrar por grupo:</mat-label>
@@ -20,7 +20,7 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-        </div>       
+        </div>
 
         <div class="columna filtroAula">
             <mat-form-field appearance="fill" class="filtroGrupo">
@@ -40,7 +40,7 @@
                Exportar
             </button>
         </div>
-        
+
     </form>
     <section class="schedule-container">
     <!-- Matriz con días de la semana -->
@@ -74,14 +74,14 @@
                     </div>
                 </div>
                 <!-- AULA -->
-                
+
             </mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="columnasTabla"></mat-header-row>
         <mat-row *matRowDef="let fila; columns: columnasTabla;"></mat-row>
     </mat-table>
-        
+
     </section>
 
     <!-- Botones -->
