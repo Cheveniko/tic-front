@@ -1,25 +1,21 @@
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subscription } from "rxjs";
-import { Docente } from "src/app/modulos/docentes/modelos/docente.interface";
-import { DocenteApiService } from "src/app/modulos/docentes/servicios/docentes_api.service";
-import { Grupo } from "src/app/modulos/grupos/modelos/grupo.interface";
-import { GrupoApiService } from "src/app/modulos/grupos/servicios/grupo_api.service";
-import JornadaLaboral from "src/app/modulos/parametros-inciales/models/jornada-laboral.interface";
-import { SemestreService } from "src/app/modulos/parametros-inciales/services/semestre-api.service";
-import Swal from "sweetalert2";
-import { HorarioEstupido } from "../../modelos/horario.interface";
-import { HorarioGrupo } from "../../modelos/horarioGrupo.interface";
-import { HorarioDocente } from "../../modelos/horarioDocente.interface";
+import { Horario } from "../../modelos/horario.interface";
+import * as XLSX from "xlsx";
+import { jsPDF } from "jspdf";
 import { HorarioApiService } from "../../servicios/horarios_api.service";
+import { Router } from "@angular/router";
+import { FormControl } from "@angular/forms";
+import { Location } from "@angular/common";
 
-interface Hora {
-  hora: number;
-  rangoHoras: string;
-  horarioFilaDocente: HorarioDocente[];
-  horarioFilaGrupo: HorarioGrupo[];
+export interface FilaHorario {
+  hora: string;
+  lunes: Horario | null;
+  martes: Horario | null;
+  miercoles: Horario | null;
+  jueves: Horario | null;
+  viernes: Horario | null;
+  sabado: Horario | null;
 }
 
 @Component({
@@ -29,289 +25,575 @@ interface Hora {
 })
 export class VisualizarHorarioComponent implements OnInit {
   constructor(
+    private horarioService: HorarioApiService,
     private readonly router: Router,
-    private readonly ruta: ActivatedRoute,
-    private readonly formBuilder: FormBuilder,
-    private readonly horarioService: HorarioApiService,
-    private readonly docenteService: DocenteApiService,
-    private readonly semestresService: SemestreService,
-    private readonly grupoService: GrupoApiService,
+    private location: Location,
   ) {}
 
-  columnasTabla: string[] = ["HORA"];
-  datoFilasTabla = new MatTableDataSource<Hora>([]);
-  jornadasLaborales?: JornadaLaboral[];
+  horarios: Horario[] = []; // Tu array de datos
+  horariosFiltrados: Horario[] = []; // Array filtrado
+  datoFilasTabla = new MatTableDataSource<FilaHorario>([]);
 
-  horarioJSON?: HorarioEstupido;
-  arregloDocentes?: Docente[];
-  arregloGrupos?: Grupo[];
+  displayedColumns: string[] = [
+    "hora",
+    "lunes",
+    "martes",
+    "miercoles",
+    "jueves",
+    "viernes",
+    "sabado",
+  ];
 
-  params$?: Subscription;
-  filtroDocenteSuscripcion$?: Subscription;
-  filtroGrupoSuscripcion$?: Subscription;
-  filtroSeleccionado?: string;
+  horas: string[] = [
+    "07:00",
+    "08:00",
+    "09:00",
+    "10:00",
+    "11:00",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
+    "17:00",
+    "18:00",
+    "19:00",
+    "20:00",
+  ];
 
-  cargando: boolean = false;
+  diasSemana: string[] = [
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+  ];
 
-  formGroup?: FormGroup;
-  idHorario?: string;
+  currentRoute: string = "";
+
+  // Controles de filtros
+  filtroProfesor = new FormControl("");
+  filtroAula = new FormControl("");
+  filtroGrupo = new FormControl("");
+  filtroMateria = new FormControl("");
+
+  // Listas para los dropdowns
+  profesores: string[] = [];
+  aulas: string[] = [];
+  grupos: string[] = [];
+  materias: string[] = [];
+
+  // Estado de los filtros
+  mostrarFiltros = false;
 
   ngOnInit(): void {
-    Swal.showLoading();
-    this.cargarDatosSelect();
-    this.cargarMatrizHorario();
-    this.formularioControl();
+    this.currentRoute = this.router.url.split("/").pop() || "";
+    this.cargarHorarios();
+    this.configurarFiltros();
   }
 
-  cargarMatrizHorario() {
-    this.semestresService
-      .obtenerSemestreConPlanificacionEnProgreso()
-      .subscribe({
-        next: (semestre) => {
-          // Se obtienen las jornadas laborales
-          this.jornadasLaborales = semestre.jornadas;
+  cargarHorarios(): void {
+    this.horarioService.obtenerHorarioSemestre(this.currentRoute).subscribe({
+      next: (horario) => {
+        this.horarios = horario;
+        this.horariosFiltrados = [...horario]; // Inicializar filtrados
+        this.extraerOpcionesFiltros();
+        this.procesarHorarios();
+      },
+      error: (error) => {
+        console.error("Error al cargar horarios:", error);
+        this.horarios = [];
+        this.horariosFiltrados = [];
+        this.procesarHorarios();
+      },
+    });
+  }
 
-          // Ordenar datos en la semana
-          const dias = [
-            "LUNES",
-            "MARTES",
-            "MIÉRCOLES",
-            "JUEVES",
-            "VIERNES",
-            "SÁBADO",
-            "DOMINGO",
-          ];
-          dias.forEach((dia) => {
-            this.jornadasLaborales!.forEach((jornada) => {
-              if (jornada.dia.toUpperCase() == dia) {
-                this.columnasTabla.push(jornada.dia);
+  configurarFiltros(): void {
+    // Suscribirse a cambios en los filtros
+    this.filtroProfesor.valueChanges.subscribe(() => this.aplicarFiltros());
+    this.filtroAula.valueChanges.subscribe(() => this.aplicarFiltros());
+    this.filtroGrupo.valueChanges.subscribe(() => this.aplicarFiltros());
+    this.filtroMateria.valueChanges.subscribe(() => this.aplicarFiltros());
+  }
+
+  extraerOpcionesFiltros(): void {
+    // Extraer valores únicos para los dropdowns
+    this.profesores = [
+      ...new Set(this.horarios.map((h) => h.profesor).filter((p) => p)),
+    ].sort();
+    this.aulas = [
+      ...new Set(this.horarios.map((h) => h.aula).filter((a) => a)),
+    ].sort();
+    this.grupos = [
+      ...new Set(this.horarios.map((h) => h.grupo).filter((g) => g)),
+    ].sort();
+    this.materias = [
+      ...new Set(this.horarios.map((h) => h.materia).filter((m) => m)),
+    ].sort();
+  }
+
+  aplicarFiltros(): void {
+    this.horariosFiltrados = this.horarios.filter((horario) => {
+      const coincideProfesor =
+        !this.filtroProfesor.value ||
+        horario.profesor
+          ?.toLowerCase()
+          .includes(this.filtroProfesor.value.toLowerCase());
+
+      const coincideAula =
+        !this.filtroAula.value ||
+        horario.aula
+          ?.toLowerCase()
+          .includes(this.filtroAula.value.toLowerCase());
+
+      const coincideGrupo =
+        !this.filtroGrupo.value ||
+        horario.grupo
+          ?.toLowerCase()
+          .includes(this.filtroGrupo.value.toLowerCase());
+
+      const coincideMateria =
+        !this.filtroMateria.value ||
+        horario.materia
+          ?.toLowerCase()
+          .includes(this.filtroMateria.value.toLowerCase());
+
+      return (
+        coincideProfesor && coincideAula && coincideGrupo && coincideMateria
+      );
+    });
+
+    this.procesarHorarios();
+  }
+
+  limpiarFiltros(): void {
+    this.filtroProfesor.setValue("");
+    this.filtroAula.setValue("");
+    this.filtroGrupo.setValue("");
+    this.filtroMateria.setValue("");
+  }
+
+  toggleFiltros(): void {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
+
+  procesarHorarios(): void {
+    const filasHorario: FilaHorario[] = [];
+
+    this.horas.forEach((hora) => {
+      const fila: FilaHorario = {
+        hora: hora,
+        lunes: null,
+        martes: null,
+        miercoles: null,
+        jueves: null,
+        viernes: null,
+        sabado: null,
+      };
+
+      // Usar horarios filtrados en lugar de todos los horarios
+      this.horariosFiltrados.forEach((horario) => {
+        const horaInicio = parseInt(horario.hora_inicio.split(":")[0], 10);
+        const horaFin = parseInt(horario.hora_fin.split(":")[0], 10);
+        const horaActual = parseInt(hora.split(":")[0], 10);
+
+        if (horaActual >= horaInicio && horaActual < horaFin) {
+          const dia = horario.dia.toLowerCase();
+
+          switch (dia) {
+            case "lunes":
+              fila.lunes = horario;
+              break;
+            case "martes":
+              fila.martes = horario;
+              break;
+            case "miércoles":
+              fila.miercoles = horario;
+              break;
+            case "jueves":
+              fila.jueves = horario;
+              break;
+            case "viernes":
+              fila.viernes = horario;
+              break;
+            case "sabado":
+              fila.sabado = horario;
+              break;
+          }
+        }
+      });
+
+      filasHorario.push(fila);
+    });
+
+    this.datoFilasTabla.data = filasHorario;
+  }
+
+  // Método para obtener el texto de una celda
+  obtenerTextoHorario(horario: Horario | null): string {
+    if (!horario) return "";
+
+    return `${horario.materia}\n${horario.profesor}\n${horario.aula}\n${horario.grupo}`;
+  }
+
+  // Método para verificar si una celda debe mostrar contenido
+  // (para evitar duplicados en horarios de múltiples horas)
+  deberMostrarContenido(horario: Horario | null, horaActual: string): boolean {
+    if (!horario) return false;
+
+    const horaInicio = horario.hora_inicio.substring(0, 5); // "07:00"
+    return horaInicio === horaActual;
+  }
+
+  // Método para calcular el rowspan de una celda
+  calcularRowspan(horario: Horario | null): number {
+    if (!horario) return 1;
+
+    const horaInicio = parseInt(horario.hora_inicio.split(":")[0], 10);
+    const horaFin = parseInt(horario.hora_fin.split(":")[0], 10);
+    return horaFin - horaInicio;
+  }
+
+  regresarPantallaAnterior(): void {
+    this.location.back();
+  }
+
+  descargarExcel(): void {
+    const sheetData = [
+      ["Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+    ];
+
+    // Crear matriz de horarios usando los datos filtrados
+    const horas = [
+      "07:00",
+      "08:00",
+      "09:00",
+      "10:00",
+      "11:00",
+      "12:00",
+      "13:00",
+      "14:00",
+      "15:00",
+      "16:00",
+      "17:00",
+      "18:00",
+      "19:00",
+      "20:00",
+    ];
+
+    const diasSemana = [
+      "Lunes",
+      "Martes",
+      "Miércoles",
+      "Jueves",
+      "Viernes",
+      "Sábado",
+    ];
+
+    // Inicializar todas las filas de horas con celdas vacías
+    horas.forEach((hora) => {
+      sheetData.push([hora, "", "", "", "", "", ""]);
+    });
+
+    // Llenar la matriz con los horarios filtrados
+    this.horariosFiltrados.forEach((horario) => {
+      const diaIndex = diasSemana.indexOf(horario.dia);
+
+      if (diaIndex !== -1) {
+        const horaInicio = parseInt(horario.hora_inicio.split(":")[0], 10);
+        const horaFin = parseInt(horario.hora_fin.split(":")[0], 10);
+
+        // Llenar todas las horas desde inicio hasta fin
+        for (let horaActual = horaInicio; horaActual < horaFin; horaActual++) {
+          const horaString = `${horaActual.toString().padStart(2, "0")}:00`;
+          const horaIndex = horas.indexOf(horaString);
+
+          if (horaIndex !== -1) {
+            const cellContent = `${horario.materia} ${horario.profesor || ""} ${horario.aula || ""} ${horario.grupo || ""}`;
+            sheetData[horaIndex + 1][diaIndex + 1] = cellContent;
+          }
+        }
+      }
+    });
+
+    // Crear el archivo Excel
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+
+    // Configurar anchos de columnas
+    const colWidths = [
+      { wch: 10 }, // Hora
+      { wch: 25 }, // Lunes
+      { wch: 25 }, // Martes
+      { wch: 25 }, // Miércoles
+      { wch: 25 }, // Jueves
+      { wch: 25 }, // Viernes
+      { wch: 25 }, // Sábado
+    ];
+    worksheet["!cols"] = colWidths;
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Horario");
+
+    // Generar nombre del archivo con filtros aplicados
+    const fechaActual = new Date().toISOString().split("T")[0];
+    const nombreArchivo = `Horario-Filtrado-${fechaActual}.xlsx`;
+
+    XLSX.writeFile(workbook, nombreArchivo);
+  }
+
+  descargarPDF(): void {
+    const doc = new jsPDF("l", "mm", "a4");
+
+    // Configuración de la página
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 10;
+    const usableWidth = pageWidth - margin * 2;
+
+    // Configuración de la tabla
+    const horas = [
+      "07:00",
+      "08:00",
+      "09:00",
+      "10:00",
+      "11:00",
+      "12:00",
+      "13:00",
+      "14:00",
+      "15:00",
+      "16:00",
+      "17:00",
+      "18:00",
+      "19:00",
+      "20:00",
+    ];
+
+    const diasSemana = [
+      "Lunes",
+      "Martes",
+      "Miércoles",
+      "Jueves",
+      "Viernes",
+      "Sábado",
+    ];
+
+    // Dimensiones de la tabla
+    const headerHeight = 12;
+    const rowHeight = 40;
+    const hourColumnWidth = 25;
+    const dayColumnWidth = (usableWidth - hourColumnWidth) / diasSemana.length;
+
+    // Crear matriz de horarios usando datos filtrados
+    const horarioMatrix: string[][] = [];
+    horas.forEach(() => {
+      horarioMatrix.push(["", "", "", "", "", ""]);
+    });
+
+    // Llenar la matriz con horarios filtrados
+    this.horariosFiltrados.forEach((horario) => {
+      const diaIndex = diasSemana.indexOf(horario.dia);
+
+      if (diaIndex !== -1) {
+        const horaInicio = parseInt(horario.hora_inicio.split(":")[0], 10);
+        const horaFin = parseInt(horario.hora_fin.split(":")[0], 10);
+
+        for (let horaActual = horaInicio; horaActual < horaFin; horaActual++) {
+          const horaString = `${horaActual.toString().padStart(2, "0")}:00`;
+          const horaIndex = horas.indexOf(horaString);
+
+          if (horaIndex !== -1) {
+            const cellContent = `${horario.materia}|${horario.profesor || ""}|${horario.aula || ""}|${horario.grupo || ""}`;
+            horarioMatrix[horaIndex][diaIndex] = cellContent;
+          }
+        }
+      }
+    });
+
+    // Función para dibujar encabezados
+    const drawHeader = (startY: number) => {
+      const fechaActual = new Date().toLocaleDateString("es-ES");
+      const filtrosTexto = this.obtenerTextoFiltros();
+
+      // Título
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
+      doc.text("Horario Filtrado", pageWidth / 2, 20, { align: "center" });
+
+      // Información de filtros
+      if (filtrosTexto) {
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Filtros aplicados: ${filtrosTexto}`, pageWidth / 2, 30, {
+          align: "center",
+        });
+      }
+
+      // Encabezados de la tabla
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+
+      // Encabezado "Hora"
+      doc.rect(margin, startY, hourColumnWidth, headerHeight);
+      doc.text("Hora", margin + hourColumnWidth / 2, startY + 8, {
+        align: "center",
+      });
+
+      // Encabezados de los días
+      diasSemana.forEach((dia, index) => {
+        const x = margin + hourColumnWidth + index * dayColumnWidth;
+        doc.rect(x, startY, dayColumnWidth, headerHeight);
+        doc.text(dia, x + dayColumnWidth / 2, startY + 8, { align: "center" });
+      });
+    };
+
+    // Función para dividir texto en líneas
+    const splitTextToLines = (text: string, maxWidth: number): string[] => {
+      const words = text.split(" ");
+      const lines: string[] = [];
+      let currentLine = "";
+
+      words.forEach((word) => {
+        const testLine = currentLine + (currentLine ? " " : "") + word;
+        const textWidth = doc.getTextWidth(testLine);
+
+        if (textWidth > maxWidth && currentLine) {
+          lines.push(currentLine);
+          currentLine = word;
+        } else {
+          currentLine = testLine;
+        }
+      });
+
+      if (currentLine) {
+        lines.push(currentLine);
+      }
+
+      return lines;
+    };
+
+    // Función para dibujar una fila
+    const drawRow = (hora: string, horaIndex: number, y: number) => {
+      // Columna de hora
+      doc.rect(margin, y, hourColumnWidth, rowHeight);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+      doc.text(hora, margin + hourColumnWidth / 2, y + 12, { align: "center" });
+
+      // Columnas de días
+      diasSemana.forEach((dia, diaIndex) => {
+        const x = margin + hourColumnWidth + diaIndex * dayColumnWidth;
+        doc.rect(x, y, dayColumnWidth, rowHeight);
+
+        // Contenido de la celda
+        const cellContent = horarioMatrix[horaIndex][diaIndex];
+        if (cellContent) {
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(8);
+
+          const parts = cellContent
+            .split("|")
+            .filter((part) => part.trim() !== "");
+          let currentY = y + 6;
+          const lineHeight = 4;
+          const maxWidth = dayColumnWidth - 4;
+
+          parts.forEach((part, partIndex) => {
+            const lines = splitTextToLines(part, maxWidth);
+
+            lines.forEach((line) => {
+              if (currentY < y + rowHeight - 3) {
+                // Aplicar formato especial para materia (primera parte)
+                if (partIndex === 0) {
+                  doc.setFont("helvetica", "bold");
+                } else {
+                  doc.setFont("helvetica", "normal");
+                }
+
+                doc.text(line, x + 2, currentY, { align: "left" });
+                currentY += lineHeight;
               }
             });
           });
-          // Crear filas en la tabla
-          this.crearFilasTabla();
-        },
-        error: () => {
-          this.mostrarMensajeError();
-        },
+        }
       });
-  }
+    };
 
-  cargarDatosSelect() {
-    this.params$ = this.ruta.params.subscribe({
-      next: (params) => {
-        this.idHorario = String(params["id"]);
-        this.obtenerDocentes();
-        this.obtenerGrupos();
-      },
-      error: (res) => {
-        this.redireccionarTrasError(res);
-      },
-    });
-  }
+    // Función para agregar pie de página
+    const drawFooter = () => {
+      doc.setFontSize(8);
+      doc.setFont("helvetica", "normal");
+      const fechaActual = new Date().toLocaleDateString("es-ES");
+      doc.text(`Generado el: ${fechaActual}`, margin, pageHeight - 10);
+      doc.text(
+        `Página ${doc.getNumberOfPages()}`,
+        pageWidth - margin - 20,
+        pageHeight - 10,
+      );
+      doc.text(
+        `Mostrando ${this.horariosFiltrados.length} de ${this.horarios.length} horarios`,
+        pageWidth / 2,
+        pageHeight - 10,
+        { align: "center" },
+      );
+    };
 
-  crearFilasTabla() {
-    // Identificar horas mínima y máxima
-    let horaMinima = 24;
-    let horaMaxima = 0;
-    for (let jornada of this.jornadasLaborales!) {
-      const horaInicio = Number(jornada.horaInicio.split(":")[0]);
-      const horaFin = Number(jornada.horaFin.split(":")[0]);
-      horaMinima = horaInicio < horaMinima ? horaInicio : horaMinima;
-      horaMaxima = horaFin > horaMaxima ? horaFin : horaMaxima;
-    }
+    // Dibujar el contenido
+    let currentY = 40;
+    let currentPageStartY = currentY;
 
-    const rangoHoras = horaMaxima - horaMinima;
+    // Dibujar encabezados en la primera página
+    drawHeader(currentPageStartY);
+    currentY = currentPageStartY + headerHeight;
 
-    for (let indice = 0; indice < rangoHoras; indice++) {
-      const hora = horaMinima + indice;
-      const horaSemana = {
-        hora: hora,
-        rangoHoras: `${hora}:00 - ${hora + 1}:00`,
-        horarioFilaDocente: [],
-        horarioFilaGrupo: [],
-      };
-      this.datoFilasTabla.data.push(horaSemana);
-    }
+    horas.forEach((hora, horaIndex) => {
+      // Verificar si necesitamos una nueva página
+      if (currentY + rowHeight > pageHeight - 30) {
+        // Agregar pie de página a la página actual
+        drawFooter();
 
-    Swal.close();
-    this.cargando = true;
-  }
+        // Crear nueva página
+        doc.addPage();
+        currentY = 40;
+        currentPageStartY = currentY;
 
-  formularioControl() {
-    this.formGroup = this.formBuilder.group({
-      filtroDocente: new FormControl({ value: "", disabled: false }),
-      filtroGrupo: new FormControl({ value: "", disabled: false }),
-    });
-
-    this.filtroDocenteSuscripcion$ = this.formGroup
-      .get("filtroDocente")!
-      .valueChanges.subscribe({
-        next: (nombreDocente) => {
-          if (this.formGroup!.get("filtroDocente")!.value != "") {
-            this.datoFilasTabla.data.forEach((fila) => {
-              fila.horarioFilaGrupo = [];
-              fila.horarioFilaDocente = [];
-            });
-
-            Swal.showLoading();
-
-            this.horarioService
-              .obtenerHorarioDocente(nombreDocente, this.idHorario!)
-              .subscribe({
-                next: (arregloDocentes) => {
-                  for (let i = 0; i < this.datoFilasTabla.data.length; i++) {
-                    const filtroDeHorario = arregloDocentes.filter(
-                      (horario) => {
-                        return (
-                          Number(horario.horario.split(":")[0]) ==
-                          this.datoFilasTabla.data[i].hora
-                        );
-                      },
-                    );
-                    filtroDeHorario.forEach((h) => {
-                      this.datoFilasTabla.data[i].horarioFilaDocente?.push(h);
-                    });
-                  }
-                },
-                error: (error) => {
-                  Swal.fire("Error", `${error.message}`, "error");
-                },
-                complete: () => {
-                  Swal.close();
-                },
-              });
-            this.formGroup?.get("filtroGrupo")!.setValue("");
-          }
-        },
-      });
-
-    this.filtroGrupoSuscripcion$ = this.formGroup
-      .get("filtroGrupo")!
-      .valueChanges.subscribe({
-        next: (nombreGrupo) => {
-          if (this.formGroup!.get("filtroGrupo")!.value != "") {
-            this.datoFilasTabla.data.forEach((fila) => {
-              fila.horarioFilaGrupo = [];
-              fila.horarioFilaDocente = [];
-            });
-
-            Swal.showLoading();
-
-            this.horarioService
-              .obtenerHorarioGrupo(nombreGrupo, this.idHorario!)
-              .subscribe({
-                next: (arregloGrupos) => {
-                  for (let i = 0; i < this.datoFilasTabla.data.length; i++) {
-                    const filtroDeHorario = arregloGrupos.filter((horario) => {
-                      return (
-                        Number(horario.horario.split(":")[0]) ==
-                        this.datoFilasTabla.data[i].hora
-                      );
-                    });
-                    filtroDeHorario.forEach((h) => {
-                      this.datoFilasTabla.data[i].horarioFilaGrupo?.push(h);
-                    });
-                  }
-                },
-                error: (error) => {
-                  Swal.fire("Error", `${error.message}`, "error");
-                },
-                complete: () => {
-                  Swal.close();
-                },
-              });
-
-            this.formGroup?.get("filtroDocente")!.setValue("");
-          }
-        },
-      });
-  }
-
-  obtenerHorarioPorDiaDocente(arregloHorario: HorarioDocente[], dia: string) {
-    if (arregloHorario) {
-      return arregloHorario.find((horario) => {
-        return horario.dia == dia;
-      });
-    }
-    return undefined;
-  }
-
-  obtenerHorarioPorDiaGrupo(arregloHorario: HorarioGrupo[], dia: string) {
-    if (arregloHorario) {
-      return arregloHorario.find((horario) => {
-        return horario.dia == dia;
-      });
-    }
-    return undefined;
-  }
-
-  obtenerDocentes() {
-    this.docenteService.visualizarDocentes().subscribe({
-      next: (result) => {
-        this.arregloDocentes = result as Docente[];
-      },
-      error: (error) => {
-        Swal.fire(
-          "Error",
-          "No se pudo obtener los datos de los docentes.",
-          "error",
-        );
-      },
-    });
-  }
-
-  obtenerGrupos() {
-    this.grupoService.obtenerGrupos().subscribe({
-      next: (result) => {
-        this.arregloGrupos = result as Grupo[];
-      },
-      error: (error) => {
-        Swal.fire(
-          "Error",
-          "No se pudo obtener los datos de los grupos.",
-          "error",
-        );
-      },
-    });
-  }
-
-  redireccionarTrasError(res: any) {
-    Swal.fire("Error", res.error.message, "error").then((result) => {
-      if (result.isConfirmed || result.isDismissed) {
-        this.router.navigate(["/spa", "horarios"]);
+        // Dibujar encabezados en la nueva página
+        drawHeader(currentPageStartY);
+        currentY = currentPageStartY + headerHeight;
       }
+
+      // Dibujar la fila
+      drawRow(hora, horaIndex, currentY);
+      currentY += rowHeight;
     });
+
+    // Agregar pie de página a la última página
+    drawFooter();
+
+    // Generar nombre del archivo
+    const fechaActual = new Date().toISOString().split("T")[0];
+    const nombreArchivo = `Horario-Filtrado-${fechaActual}.pdf`;
+
+    doc.save(nombreArchivo);
   }
 
-  mostrarMensajeError() {
-    Swal.fire({
-      title: "Error",
-      text: "No se pudieron obtener los registros.",
-      showCancelButton: true,
-      confirmButtonText: "Reiniciar página",
-      cancelButtonText: "Cerrar",
-      icon: "error",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location.reload();
-      }
-    });
-  }
+  private obtenerTextoFiltros(): string {
+    const filtrosAplicados: string[] = [];
 
-  ngOnDestroy(): void {
-    if (this.params$) {
-      this.params$.unsubscribe();
+    if (this.filtroProfesor.value) {
+      filtrosAplicados.push(`Profesor: ${this.filtroProfesor.value}`);
     }
-    if (this.filtroGrupoSuscripcion$) {
-      this.filtroGrupoSuscripcion$.unsubscribe();
+    if (this.filtroAula.value) {
+      filtrosAplicados.push(`Aula: ${this.filtroAula.value}`);
     }
-    if (this.filtroDocenteSuscripcion$) {
-      this.filtroDocenteSuscripcion$.unsubscribe();
+    if (this.filtroGrupo.value) {
+      filtrosAplicados.push(`Grupo: ${this.filtroGrupo.value}`);
     }
-  }
+    if (this.filtroMateria.value) {
+      filtrosAplicados.push(`Materia: ${this.filtroMateria.value}`);
+    }
 
-  actionExample() {
-    console.log("actionExample");
+    return filtrosAplicados.join(", ");
   }
 }
