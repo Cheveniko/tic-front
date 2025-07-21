@@ -16,14 +16,14 @@
                 <!-- INPUT CORREO ELECTRONICO -->
                 <mat-form-field appearance="fill">
                     <mat-label>Correo electrónico institucional</mat-label>
-                    <input matInput formControlName="correo" placeholder="Ej.: ejemplo@epn.edu.ec">
+                    <input matInput formControlName="correo" placeholder="Ej.: ejemplo@epn.edu.ec" data-cy="emailInput">
                     <!-- MENSAJE DE ERROR -->
-                    <mat-error *ngIf="formGroup.get('correo')?.invalid && 
+                    <mat-error *ngIf="formGroup.get('correo')?.invalid &&
                         formGroup.get('correo')?.touched &&
                         formGroup.get('correo')?.hasError('required')">
                         El correo es un campo requerido.
                     </mat-error>
-                    <mat-error *ngIf="formGroup.get('correo')?.invalid && 
+                    <mat-error *ngIf="formGroup.get('correo')?.invalid &&
                         formGroup.get('correo')?.touched &&
                         (formGroup.get('correo')?.hasError('email') || formGroup.get('correo')?.hasError('pattern'))">
                         Ingrese un correo institucional válido (Ej.: ejemplo&#64;epn.edu.ec).
@@ -32,8 +32,8 @@
                 <!-- INPUT CONTRASEÑA -->
                 <mat-form-field appearance="fill">
                     <mat-label>Contraseña</mat-label>
-                    <input matInput formControlName="constrasena" type="password">
-                    <mat-error *ngIf="formGroup.get('constrasena')?.invalid && 
+                    <input matInput formControlName="constrasena" type="password" data-cy="passwordInput">
+                    <mat-error *ngIf="formGroup.get('constrasena')?.invalid &&
                         formGroup.get('constrasena')?.touched &&
                         formGroup.get('constrasena')?.hasError('required')">
                         La contraseña es un campo requerido.
@@ -51,14 +51,14 @@
                         formGroup.get('constrasena')?.hasError('minlength')">
                         La contraseña debe tener al menos 8 caracteres.
                     </mat-error>
-                    <mat-error *ngIf="formGroup.get('constrasena')?.invalid && 
+                    <mat-error *ngIf="formGroup.get('constrasena')?.invalid &&
                         formGroup.get('constrasena')?.dirty &&
                         formGroup.get('constrasena')?.hasError('maxlength')">
                         La contraseña debe tener como máximo 16 caracteres.
                     </mat-error>
                 </mat-form-field>
                 <button mat-raised-button class="buttonStyle" [disabled]="formGroup.invalid"
-                    (click)="login()">Ingresar</button>
+                    (click)="login()" data-cy="loginButton">Ingresar</button>
 
                 <mat-error *ngIf="errorSesion" id="errorSesion">
                     Correo o contraseña incorrectos.</mat-error>

@@ -25,6 +25,13 @@ mat-form-field {
 
 mat-form-field.mat-form-field {
     font-size: 15px;
+    position: relative;
+    z-index: 0;
+}
+
+mat-label {
+    z-index: 1;
+    pointer-events: none;
 }
 
 h3 {
