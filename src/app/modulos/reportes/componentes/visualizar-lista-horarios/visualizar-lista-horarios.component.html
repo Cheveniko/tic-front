@@ -4,26 +4,7 @@
       <h1>Reportes</h1>
       <p>Selecciona el horario del cual quisieras generar un reporte.</p>
     </div>
-    <div class="header-operations">
-      <!-- REPORTES -->
-      <!-- <button -->
-      <!--   mat-raised-button -->
-      <!--   [matMenuTriggerFor]="menu" -->
-      <!--   class="btnSuperior" -->
-      <!--   color="secondary" -->
-      <!-- > -->
-      <!--   <mat-icon>download</mat-icon> -->
-      <!--   Descargar Reporte -->
-      <!-- </button> -->
-      <!-- <mat-menu #menu="matMenu"> -->
-      <!--   <button mat-menu-item (click)="descargarReporte('xlsx')"> -->
-      <!--     Formato XLSX -->
-      <!--   </button> -->
-      <!--   <button mat-menu-item (click)="descargarReporte('pdf')"> -->
-      <!--     Formato PDF -->
-      <!--   </button> -->
-      <!-- </mat-menu> -->
-    </div>
+    <div class="header-operations"></div>
   </section>
 
   <div class="parteSuperior">
@@ -63,6 +44,7 @@
           (click)="exportarExcelPorSemestre(fila.semestre)"
           matTooltip="Exportar a Excel"
           matTooltipPosition="right"
+          [attr.data-cy]="'excel-' + fila.semestre"
         >
           <mat-icon color="accent">my_library_books</mat-icon>
         </button>
@@ -73,6 +55,7 @@
           (click)="exportarPDFPorSemestre(fila.semestre)"
           matTooltip="Exportar a PDF"
           matTooltipPosition="right"
+          [attr.data-cy]="'pdf-' + fila.semestre"
         >
           <mat-icon color="accent">picture_as_pdf</mat-icon>
         </button>
@@ -89,6 +72,7 @@
           [routerLink]="['visualizarHorario', fila.semestre]"
           matTooltip="Visualizar"
           matTooltipPosition="right"
+          [attr.data-cy]="'visualize-' + fila.semestre"
         >
           <mat-icon color="primary">visibility</mat-icon>
         </button>

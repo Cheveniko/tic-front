@@ -1,15 +1,29 @@
 <!-- horario-individual.component.html -->
 <div class="horario-container">
   <div class="header-section">
-    <h2>Horario {{currentRoute}}</h2>
+    <h2>Horario {{ currentRoute }}</h2>
 
     <div class="acciones-principales">
-      <button mat-raised-button color="primary" (click)="toggleFiltros()" class="toggle-filtros-btn">
-        <mat-icon>{{ mostrarFiltros ? 'keyboard_arrow_up' : 'filter_list' }}</mat-icon>
-        {{ mostrarFiltros ? 'Ocultar Filtros' : 'Mostrar Filtros' }}
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="toggleFiltros()"
+        class="toggle-filtros-btn"
+        data-cy="filtros"
+      >
+        <mat-icon>{{
+          mostrarFiltros ? "keyboard_arrow_up" : "filter_list"
+        }}</mat-icon>
+        {{ mostrarFiltros ? "Ocultar Filtros" : "Mostrar Filtros" }}
       </button>
 
-      <button mat-raised-button color="accent" [matMenuTriggerFor]="menuReporte" class="btn-descargar">
+      <button
+        mat-raised-button
+        color="accent"
+        [matMenuTriggerFor]="menuReporte"
+        class="btn-descargar"
+        data-cy="descargar-reporte"
+      >
         <mat-icon>download</mat-icon>
         Descargar Reporte
       </button>
@@ -27,42 +41,68 @@
     </div>
 
     <div class="filtros-section">
-      <div class="filtros-container" [ngClass]="{ 'visible': mostrarFiltros }">
+      <div class="filtros-container" [ngClass]="{ visible: mostrarFiltros }">
         <div class="filtros-grid">
           <mat-form-field appearance="outline">
             <mat-label>Filtrar por Profesor</mat-label>
-            <input matInput [formControl]="filtroProfesor" placeholder="Buscar profesor...">
+            <input
+              matInput
+              [formControl]="filtroProfesor"
+              placeholder="Buscar profesor..."
+              data-cy="profesor"
+            />
             <mat-icon matSuffix>person</mat-icon>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Filtrar por Aula</mat-label>
-            <input matInput [formControl]="filtroAula" placeholder="Buscar aula...">
+            <input
+              matInput
+              [formControl]="filtroAula"
+              placeholder="Buscar aula..."
+              data-cy="aula"
+            />
             <mat-icon matSuffix>room</mat-icon>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Filtrar por Grupo</mat-label>
-            <input matInput [formControl]="filtroGrupo" placeholder="Buscar grupo...">
+            <input
+              matInput
+              [formControl]="filtroGrupo"
+              placeholder="Buscar grupo..."
+              data-cy="grupo"
+            />
             <mat-icon matSuffix>group</mat-icon>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Filtrar por Materia</mat-label>
-            <input matInput [formControl]="filtroMateria" placeholder="Buscar materia...">
+            <input
+              matInput
+              [formControl]="filtroMateria"
+              placeholder="Buscar materia..."
+              data-cy="materia"
+            />
             <mat-icon matSuffix>book</mat-icon>
           </mat-form-field>
         </div>
 
         <div class="filtros-actions">
-          <button mat-stroked-button color="warn" (click)="limpiarFiltros()" class="limpiar-btn">
+          <button
+            mat-stroked-button
+            color="warn"
+            (click)="limpiarFiltros()"
+            class="limpiar-btn"
+          >
             <mat-icon>clear</mat-icon>
             Limpiar Filtros
           </button>
 
           <div class="filtros-info">
             <span class="results-count">
-              Mostrando {{ horariosFiltrados.length }} de {{ horarios.length }} clases
+              Mostrando {{ horariosFiltrados.length }} de
+              {{ horarios.length }} clases
             </span>
           </div>
         </div>
@@ -72,20 +112,36 @@
 
   <div class="tabla-horario-wrapper">
     <table mat-table [dataSource]="datoFilasTabla" class="tabla-horario">
-
       <!-- Columna de Hora -->
       <ng-container matColumnDef="hora">
         <th mat-header-cell *matHeaderCellDef class="header-hora">Hora</th>
-        <td mat-cell *matCellDef="let fila" class="celda-hora">{{ fila.hora }}</td>
+        <td mat-cell *matCellDef="let fila" class="celda-hora">
+          {{ fila.hora }}
+        </td>
       </ng-container>
 
       <!-- Columna Lunes -->
       <ng-container matColumnDef="lunes">
         <th mat-header-cell *matHeaderCellDef class="header-dia">Lunes</th>
-        <td mat-cell *matCellDef="let fila" class="celda-dia"
-            [attr.rowspan]="deberMostrarContenido(fila.lunes, fila.hora) ? calcularRowspan(fila.lunes) : null"
-            [style.display]="!deberMostrarContenido(fila.lunes, fila.hora) && fila.lunes ? 'none' : 'table-cell'">
-          <div class="contenido-horario" *ngIf="fila.lunes && deberMostrarContenido(fila.lunes, fila.hora)">
+        <td
+          mat-cell
+          *matCellDef="let fila"
+          class="celda-dia"
+          [attr.rowspan]="
+            deberMostrarContenido(fila.lunes, fila.hora)
+              ? calcularRowspan(fila.lunes)
+              : null
+          "
+          [style.display]="
+            !deberMostrarContenido(fila.lunes, fila.hora) && fila.lunes
+              ? 'none'
+              : 'table-cell'
+          "
+        >
+          <div
+            class="contenido-horario"
+            *ngIf="fila.lunes && deberMostrarContenido(fila.lunes, fila.hora)"
+          >
             <div class="materia">{{ fila.lunes.materia }}</div>
             <div class="profesor">{{ fila.lunes.profesor }}</div>
             <div class="aula">{{ fila.lunes.aula }}</div>
@@ -97,10 +153,25 @@
       <!-- Columna Martes -->
       <ng-container matColumnDef="martes">
         <th mat-header-cell *matHeaderCellDef class="header-dia">Martes</th>
-        <td mat-cell *matCellDef="let fila" class="celda-dia"
-            [attr.rowspan]="deberMostrarContenido(fila.martes, fila.hora) ? calcularRowspan(fila.martes) : null"
-            [style.display]="!deberMostrarContenido(fila.martes, fila.hora) && fila.martes ? 'none' : 'table-cell'">
-          <div class="contenido-horario" *ngIf="fila.martes && deberMostrarContenido(fila.martes, fila.hora)">
+        <td
+          mat-cell
+          *matCellDef="let fila"
+          class="celda-dia"
+          [attr.rowspan]="
+            deberMostrarContenido(fila.martes, fila.hora)
+              ? calcularRowspan(fila.martes)
+              : null
+          "
+          [style.display]="
+            !deberMostrarContenido(fila.martes, fila.hora) && fila.martes
+              ? 'none'
+              : 'table-cell'
+          "
+        >
+          <div
+            class="contenido-horario"
+            *ngIf="fila.martes && deberMostrarContenido(fila.martes, fila.hora)"
+          >
             <div class="materia">{{ fila.martes.materia }}</div>
             <div class="profesor">{{ fila.martes.profesor }}</div>
             <div class="aula">{{ fila.martes.aula }}</div>
@@ -112,10 +183,27 @@
       <!-- Columna Miércoles -->
       <ng-container matColumnDef="miercoles">
         <th mat-header-cell *matHeaderCellDef class="header-dia">Miércoles</th>
-        <td mat-cell *matCellDef="let fila" class="celda-dia"
-            [attr.rowspan]="deberMostrarContenido(fila.miercoles, fila.hora) ? calcularRowspan(fila.miercoles) : null"
-            [style.display]="!deberMostrarContenido(fila.miercoles, fila.hora) && fila.miercoles ? 'none' : 'table-cell'">
-          <div class="contenido-horario" *ngIf="fila.miercoles && deberMostrarContenido(fila.miercoles, fila.hora)">
+        <td
+          mat-cell
+          *matCellDef="let fila"
+          class="celda-dia"
+          [attr.rowspan]="
+            deberMostrarContenido(fila.miercoles, fila.hora)
+              ? calcularRowspan(fila.miercoles)
+              : null
+          "
+          [style.display]="
+            !deberMostrarContenido(fila.miercoles, fila.hora) && fila.miercoles
+              ? 'none'
+              : 'table-cell'
+          "
+        >
+          <div
+            class="contenido-horario"
+            *ngIf="
+              fila.miercoles && deberMostrarContenido(fila.miercoles, fila.hora)
+            "
+          >
             <div class="materia">{{ fila.miercoles.materia }}</div>
             <div class="profesor">{{ fila.miercoles.profesor }}</div>
             <div class="aula">{{ fila.miercoles.aula }}</div>
@@ -127,10 +215,25 @@
       <!-- Columna Jueves -->
       <ng-container matColumnDef="jueves">
         <th mat-header-cell *matHeaderCellDef class="header-dia">Jueves</th>
-        <td mat-cell *matCellDef="let fila" class="celda-dia"
-            [attr.rowspan]="deberMostrarContenido(fila.jueves, fila.hora) ? calcularRowspan(fila.jueves) : null"
-            [style.display]="!deberMostrarContenido(fila.jueves, fila.hora) && fila.jueves ? 'none' : 'table-cell'">
-          <div class="contenido-horario" *ngIf="fila.jueves && deberMostrarContenido(fila.jueves, fila.hora)">
+        <td
+          mat-cell
+          *matCellDef="let fila"
+          class="celda-dia"
+          [attr.rowspan]="
+            deberMostrarContenido(fila.jueves, fila.hora)
+              ? calcularRowspan(fila.jueves)
+              : null
+          "
+          [style.display]="
+            !deberMostrarContenido(fila.jueves, fila.hora) && fila.jueves
+              ? 'none'
+              : 'table-cell'
+          "
+        >
+          <div
+            class="contenido-horario"
+            *ngIf="fila.jueves && deberMostrarContenido(fila.jueves, fila.hora)"
+          >
             <div class="materia">{{ fila.jueves.materia }}</div>
             <div class="profesor">{{ fila.jueves.profesor }}</div>
             <div class="aula">{{ fila.jueves.aula }}</div>
@@ -142,10 +245,27 @@
       <!-- Columna Viernes -->
       <ng-container matColumnDef="viernes">
         <th mat-header-cell *matHeaderCellDef class="header-dia">Viernes</th>
-        <td mat-cell *matCellDef="let fila" class="celda-dia"
-            [attr.rowspan]="deberMostrarContenido(fila.viernes, fila.hora) ? calcularRowspan(fila.viernes) : null"
-            [style.display]="!deberMostrarContenido(fila.viernes, fila.hora) && fila.viernes ? 'none' : 'table-cell'">
-          <div class="contenido-horario" *ngIf="fila.viernes && deberMostrarContenido(fila.viernes, fila.hora)">
+        <td
+          mat-cell
+          *matCellDef="let fila"
+          class="celda-dia"
+          [attr.rowspan]="
+            deberMostrarContenido(fila.viernes, fila.hora)
+              ? calcularRowspan(fila.viernes)
+              : null
+          "
+          [style.display]="
+            !deberMostrarContenido(fila.viernes, fila.hora) && fila.viernes
+              ? 'none'
+              : 'table-cell'
+          "
+        >
+          <div
+            class="contenido-horario"
+            *ngIf="
+              fila.viernes && deberMostrarContenido(fila.viernes, fila.hora)
+            "
+          >
             <div class="materia">{{ fila.viernes.materia }}</div>
             <div class="profesor">{{ fila.viernes.profesor }}</div>
             <div class="aula">{{ fila.viernes.aula }}</div>
@@ -157,10 +277,25 @@
       <!-- Columna Sábado -->
       <ng-container matColumnDef="sabado">
         <th mat-header-cell *matHeaderCellDef class="header-dia">Sábado</th>
-        <td mat-cell *matCellDef="let fila" class="celda-dia"
-            [attr.rowspan]="deberMostrarContenido(fila.sabado, fila.hora) ? calcularRowspan(fila.sabado) : null"
-            [style.display]="!deberMostrarContenido(fila.sabado, fila.hora) && fila.sabado ? 'none' : 'table-cell'">
-          <div class="contenido-horario" *ngIf="fila.sabado && deberMostrarContenido(fila.sabado, fila.hora)">
+        <td
+          mat-cell
+          *matCellDef="let fila"
+          class="celda-dia"
+          [attr.rowspan]="
+            deberMostrarContenido(fila.sabado, fila.hora)
+              ? calcularRowspan(fila.sabado)
+              : null
+          "
+          [style.display]="
+            !deberMostrarContenido(fila.sabado, fila.hora) && fila.sabado
+              ? 'none'
+              : 'table-cell'
+          "
+        >
+          <div
+            class="contenido-horario"
+            *ngIf="fila.sabado && deberMostrarContenido(fila.sabado, fila.hora)"
+          >
             <div class="materia">{{ fila.sabado.materia }}</div>
             <div class="profesor">{{ fila.sabado.profesor }}</div>
             <div class="aula">{{ fila.sabado.aula }}</div>
@@ -171,13 +306,18 @@
 
       <!-- Definir filas del header y contenido -->
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
   </div>
 
   <!-- Botón para regresar -->
   <div class="navegacion-section">
-    <button mat-raised-button color="accent" (click)="regresarPantallaAnterior()" class="btn-regresar">
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="regresarPantallaAnterior()"
+      class="btn-regresar"
+    >
       <mat-icon>arrow_back</mat-icon>
       Regresar
     </button>
