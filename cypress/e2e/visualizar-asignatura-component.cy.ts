@@ -1,4 +1,4 @@
-describe("Download asignatures reports", () => {
+describe("Download page reports", () => {
   const routes = [
     "/docentes",
     "/asignaturas",
